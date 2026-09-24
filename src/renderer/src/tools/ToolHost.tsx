@@ -1,6 +1,7 @@
 import type { FileInfo } from '../../../shared/types'
 import { PdfToImagesTool, PdfToPptTool, PdfToTextTool } from './ConvertTools'
 import { ImagesToPdfTool } from './ImagesToPdfTool'
+import { PdfCompressTool, PdfDecryptTool, PdfEncryptTool, PdfRepairTool } from './SecurityTools'
 import { ImageCompressTool, ImageConvertTool, ImageResizeTool } from './ImageTools'
 import { MergeTool } from './MergeTool'
 import { PageNumberTool } from './PageNumberTool'
@@ -50,6 +51,14 @@ export function ToolHost({ id, initialFiles, onBack }: Props) {
       return <ImageCompressTool tool={tool} initialFiles={initialFiles} onBack={onBack} />
     case 'image-resize':
       return <ImageResizeTool tool={tool} initialFiles={initialFiles} onBack={onBack} />
+    case 'pdf-encrypt':
+      return <PdfEncryptTool tool={tool} initialFiles={initialFiles} onBack={onBack} />
+    case 'pdf-decrypt':
+      return <PdfDecryptTool tool={tool} initialFiles={initialFiles} onBack={onBack} />
+    case 'pdf-compress':
+      return <PdfCompressTool tool={tool} initialFiles={initialFiles} onBack={onBack} />
+    case 'pdf-repair':
+      return <PdfRepairTool tool={tool} initialFiles={initialFiles} onBack={onBack} />
     default:
       return null
   }

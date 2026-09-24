@@ -138,7 +138,7 @@ export async function openPdf(path: string): Promise<OpenResult> {
   } catch (e) {
     task?.destroy()
     const name = (e as { name?: string })?.name
-    if (name === 'PasswordException') return { ok: false, encrypted: true, error: '文件已加密，请先解除密码' }
+    if (name === 'PasswordException') return { ok: false, encrypted: true, error: '文件设置了打开密码，请先用“PDF 解密”工具移除密码' }
     return { ok: false, encrypted: false, error: '无法读取，文件可能已损坏' }
   }
 }

@@ -41,7 +41,16 @@ export async function loadPdf(path: string): Promise<PDFDocument> {
   } catch {
     throw new UserError(`“${name}”不是有效的 PDF 文件，或文件已损坏`)
   }
-  if (doc.isEncrypted) throw new UserError(`“${name}”已加密，请先解除密码后再处理`)
+  if (doc.isEncrypted) {
+    // 只限制了权限（打开不需要密码）的文件：自动解除限制后处理
+    const { encryptionState, runQpdf } = await import('./qpdf')
+    if ((await encryptionState(bytes)) === 'open') {
+      throw new UserError(`“${name}”设置了打开密码，请先用“PDF 解密”工具移除密码`)
+    }
+    const r = await runQpdf(bytes, (i, o) => ['--decrypt', i, o])
+    if (!r.output) throw new UserError(`“${name}”已加密，无法处理`)
+    doc = await PDFDocument.load(r.output, { updateMetadata: false })
+  }
   return doc
 }
 
@@ -50,7 +59,7 @@ export async function pdfMeta(path: string): Promise<PdfMeta> {
     const doc = await loadPdf(path)
     return { pageCount: doc.getPageCount(), encrypted: false }
   } catch (e) {
-    if (e instanceof UserError && e.message.includes('已加密')) return { pageCount: 0, encrypted: true }
+    if (e instanceof UserError && e.message.includes('密码')) return { pageCount: 0, encrypted: true }
     throw e
   }
 }

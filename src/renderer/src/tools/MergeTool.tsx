@@ -79,7 +79,7 @@ export function MergeTool({ tool, initialFiles, onBack }: { tool: ToolDef; initi
   const hasRangeError = Object.keys(analysis.errors).length > 0
   let reason: string | undefined
   if (items.length < 2) reason = '请至少添加 2 个 PDF 文件'
-  else if (blocked) reason = blocked.preview?.encrypted ? `“${blocked.info.name}”已加密，请先移除` : `“${blocked.info.name}”无法读取，请先移除`
+  else if (blocked) reason = blocked.preview?.encrypted ? `“${blocked.info.name}”有打开密码，请先解密或移除` : `“${blocked.info.name}”无法读取，请先移除`
   else if (hasRangeError) reason = '请修正标红的页码范围'
   else if (!analysis.ready) reason = '正在读取文件…'
   else if (!effectiveName.trim()) reason = '请填写文件名'
@@ -135,7 +135,7 @@ export function MergeTool({ tool, initialFiles, onBack }: { tool: ToolDef; initi
                     <div className="sub">
                       {it.preview?.encrypted ? (
                         <span className="warn">
-                          <Lock size={12} /> 已加密，暂不支持
+                          <Lock size={12} /> 有打开密码，请先用“PDF 解密”移除
                         </span>
                       ) : it.preview?.error ? (
                         <span className="warn">

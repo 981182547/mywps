@@ -6,6 +6,8 @@ import { compressImages, convertImages, resizeImages } from './engine/imagetools
 import { addPageNumbers, addWatermark, editPages } from './engine/pages'
 import { imagesToPdf, mergePdfs, splitPdf, type Progress } from './engine/pdf'
 import { pdfToImages, pdfToPpt, pdfToText } from './engine/render'
+import { compressPdf } from './engine/compress'
+import { decryptPdf, encryptPdf, repairPdf } from './engine/security'
 
 export type WorkerMessage =
   | { kind: 'progress'; ratio: number; message: string }
@@ -38,6 +40,14 @@ function run(job: Job, progress: Progress): Promise<string[] | JobResult> {
       return compressImages(job, progress)
     case 'image-resize':
       return resizeImages(job, progress)
+    case 'pdf-encrypt':
+      return encryptPdf(job, progress)
+    case 'pdf-decrypt':
+      return decryptPdf(job, progress)
+    case 'pdf-compress':
+      return compressPdf(job, progress)
+    case 'pdf-repair':
+      return repairPdf(job, progress)
   }
 }
 

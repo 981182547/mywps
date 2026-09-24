@@ -5,6 +5,7 @@ import type { FileInfo, Job, JobProgress, JobResult } from '../shared/types'
 import { readBytes } from './engine/fsutil'
 import { pdfMeta } from './engine/pdf'
 import { imageThumb } from './engine/thumbs'
+import { encryptionState } from './engine/qpdf'
 import createJobWorker from './worker?nodeWorker'
 import type { WorkerMessage } from './worker'
 
@@ -77,6 +78,7 @@ function registerIpc(): void {
   ipcMain.handle('file:stat', (_e, paths: string[]) => statFiles(paths))
   ipcMain.handle('file:read', (_e, path: string) => readBytes(path))
   ipcMain.handle('pdf:meta', (_e, path: string) => pdfMeta(path))
+  ipcMain.handle('pdf:encryption', async (_e, path: string) => encryptionState(await readBytes(path)).catch(() => 'none' as const))
   ipcMain.handle('image:thumb', (_e, path: string, size: number) => imageThumb(path, size))
 
   ipcMain.handle('job:run', (e, jobId: string, job: Job) => {

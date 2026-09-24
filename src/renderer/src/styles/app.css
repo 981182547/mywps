@@ -2122,3 +2122,31 @@ select.input {
 .dim-row span {
   color: var(--text-3);
 }
+
+.input-suffix.password .input {
+  padding-right: 40px;
+}
+.pw-eye {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--text-3);
+  display: grid;
+  place-items: center;
+}
+.pw-eye:hover {
+  background: var(--hover);
+  color: var(--text);
+}
+.tip.warn svg {
+  color: var(--warning);
+}
+.field .input-suffix + .input-suffix {
+  margin-top: 0;
+}

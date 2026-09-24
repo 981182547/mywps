@@ -134,6 +134,46 @@ export interface PdfToPptJob {
   output: OutputTarget
 }
 
+export interface PdfEncryptJob {
+  type: 'pdf-encrypt'
+  path: string
+  /** 打开密码，可为空 */
+  openPassword: string
+  /** 权限密码（编辑密码），可为空 */
+  ownerPassword: string
+  allowPrint: boolean
+  allowCopy: boolean
+  allowModify: boolean
+  allowAnnotate: boolean
+  output: OutputTarget
+  fileName: string
+}
+
+export interface PdfDecryptJob {
+  type: 'pdf-decrypt'
+  path: string
+  password: string
+  output: OutputTarget
+  fileName: string
+}
+
+export type CompressLevel = 'low' | 'medium' | 'high'
+
+export interface PdfCompressJob {
+  type: 'pdf-compress'
+  path: string
+  level: CompressLevel
+  output: OutputTarget
+  fileName: string
+}
+
+export interface PdfRepairJob {
+  type: 'pdf-repair'
+  path: string
+  output: OutputTarget
+  fileName: string
+}
+
 export type ImageFormat = 'jpg' | 'png' | 'webp' | 'avif' | 'tiff' | 'bmp' | 'ico' | 'gif'
 
 /** 批量任务的输出：dir 为空表示各自保存在源文件所在文件夹 */
@@ -184,6 +224,10 @@ export interface BatchResult {
 }
 
 export type Job =
+  | PdfEncryptJob
+  | PdfDecryptJob
+  | PdfCompressJob
+  | PdfRepairJob
   | ImageConvertJob
   | ImageCompressJob
   | ImageResizeJob
@@ -231,6 +275,7 @@ export interface QingxiangApi {
   readFile(path: string): Promise<Uint8Array>
   pdfMeta(path: string): Promise<PdfMeta>
   imageThumb(path: string, size: number): Promise<ImageThumb | null>
+  pdfEncryption(path: string): Promise<'none' | 'open' | 'restricted'>
   runJob(jobId: string, job: Job): Promise<JobResult>
   cancelJob(jobId: string): void
   onJobProgress(handler: (p: JobProgress) => void): () => void

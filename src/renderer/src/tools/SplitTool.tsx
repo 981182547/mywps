@@ -85,7 +85,7 @@ export function SplitTool({
   let reason: string | undefined
   if (!file) reason = '请先添加一个 PDF 文件'
   else if (!preview) reason = '正在读取文件…'
-  else if (preview.encrypted) reason = '文件已加密，暂不支持'
+  else if (preview.encrypted) reason = '文件有打开密码，请先解密'
   else if (preview.error) reason = preview.error
   else if (!plan || 'error' in plan) reason = plan && 'error' in plan && plan.error ? plan.error : '请填写页码范围'
 
@@ -134,7 +134,7 @@ export function SplitTool({
               </div>
               {preview?.encrypted && (
                 <div className="alert error">
-                  <Lock size={15} /> 这个文件已加密，请先解除密码后再处理
+                  <Lock size={15} /> 这个文件设置了打开密码，请先用“PDF 解密”工具移除密码
                 </div>
               )}
               {preview?.error && (

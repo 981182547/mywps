@@ -85,7 +85,7 @@ describe('PDF 合并', () => {
     const a = await makePdf('a.pdf', 1, 100)
     await expect(
       mergePdfs({ type: 'pdf-merge', items: [{ path: a }, { path: join(FIX, 'encrypted.pdf') }], output: { dir }, fileName: 'r' })
-    ).rejects.toThrow('“encrypted.pdf”已加密，请先解除密码后再处理')
+    ).rejects.toThrow('“encrypted.pdf”设置了打开密码，请先用“PDF 解密”工具移除密码')
     expect(await pdfMeta(join(FIX, 'encrypted.pdf'))).toEqual({ pageCount: 0, encrypted: true })
   })
 
