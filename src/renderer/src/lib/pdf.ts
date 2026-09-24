@@ -73,3 +73,72 @@ export function previewPdf(path: string, targetWidth = 120): Promise<PdfPreview>
   }
   return p
 }
+
+// ---------- 打开整个文档：页面缩略图、页面尺寸 ----------
+
+export interface PdfHandle {
+  pageCount: number
+  /** 页面可见尺寸（磅，已考虑页面自带旋转） */
+  pageSize(index: number): Promise<{ width: number; height: number }>
+  /** 渲染第 index 页（0 起始）为 data URL */
+  render(index: number, width: number): Promise<string>
+  destroy(): void
+}
+
+export type OpenResult = { ok: true; handle: PdfHandle } | { ok: false; encrypted: boolean; error: string }
+
+export async function openPdf(path: string): Promise<OpenResult> {
+  let task: pdfjs.PDFDocumentLoadingTask | null = null
+  try {
+    const data = await window.qx.readFile(path)
+    task = pdfjs.getDocument({ data })
+    const doc = await task.promise
+    const t = task
+    const cache = new Map<string, Promise<string>>()
+    let queue: Promise<unknown> = Promise.resolve()
+    let destroyed = false
+    const handle: PdfHandle = {
+      pageCount: doc.numPages,
+      async pageSize(index) {
+        const page = await doc.getPage(index + 1)
+        const vp = page.getViewport({ scale: 1 })
+        return { width: vp.width, height: vp.height }
+      },
+      render(index, width) {
+        const key = `${index}@${width}`
+        let p = cache.get(key)
+        if (!p) {
+          // 串行渲染，避免同时渲染大量页面占满内存
+          p = queue.then(async () => {
+            if (destroyed) throw new Error('closed')
+            const page = await doc.getPage(index + 1)
+            const base = page.getViewport({ scale: 1 })
+            const viewport = page.getViewport({ scale: (width * (window.devicePixelRatio || 1)) / base.width })
+            const canvas = document.createElement('canvas')
+            canvas.width = Math.ceil(viewport.width)
+            canvas.height = Math.ceil(viewport.height)
+            const ctx = canvas.getContext('2d')!
+            ctx.fillStyle = '#ffffff'
+            ctx.fillRect(0, 0, canvas.width, canvas.height)
+            await page.render({ canvas, canvasContext: ctx, viewport }).promise
+            page.cleanup()
+            return canvas.toDataURL('image/jpeg', 0.85)
+          })
+          queue = p.catch(() => undefined)
+          cache.set(key, p)
+        }
+        return p
+      },
+      destroy() {
+        destroyed = true
+        t.destroy()
+      }
+    }
+    return { ok: true, handle }
+  } catch (e) {
+    task?.destroy()
+    const name = (e as { name?: string })?.name
+    if (name === 'PasswordException') return { ok: false, encrypted: true, error: '文件已加密，请先解除密码' }
+    return { ok: false, encrypted: false, error: '无法读取，文件可能已损坏' }
+  }
+}

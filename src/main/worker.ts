@@ -3,6 +3,7 @@ import { parentPort, workerData } from 'node:worker_threads'
 import type { Job } from '../shared/types'
 import { imagesToPdf, mergePdfs, splitPdf, type Progress } from './engine/pdf'
 import { UserError } from '../shared/ranges'
+import { addPageNumbers, addWatermark, editPages } from './engine/pages'
 
 export type WorkerMessage =
   | { kind: 'progress'; ratio: number; message: string }
@@ -17,6 +18,12 @@ function run(job: Job, progress: Progress): Promise<string[]> {
       return splitPdf(job, progress)
     case 'images-to-pdf':
       return imagesToPdf(job, progress)
+    case 'pdf-pages':
+      return editPages(job, progress)
+    case 'pdf-watermark':
+      return addWatermark(job, progress)
+    case 'pdf-page-numbers':
+      return addPageNumbers(job, progress)
   }
 }
 

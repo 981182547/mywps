@@ -51,7 +51,59 @@ export interface ImagesToPdfJob {
   fileName: string
 }
 
-export type Job = MergeJob | SplitJob | ImagesToPdfJob
+/** 页面整理：按顺序列出保留的页面，以及每页额外旋转角度（90 的倍数） */
+export interface PageEditJob {
+  type: 'pdf-pages'
+  path: string
+  pages: { index: number; rotate: number }[]
+  output: OutputTarget
+  fileName: string
+}
+
+export type WatermarkLayout = 'center' | 'tile'
+
+export interface WatermarkJob {
+  type: 'pdf-watermark'
+  path: string
+  mode: 'text' | 'image'
+  text: string
+  /** 字号，单位磅 */
+  fontSize: number
+  color: string
+  bold: boolean
+  /** 0 ~ 1 */
+  opacity: number
+  /** 逆时针角度 */
+  angle: number
+  layout: WatermarkLayout
+  imagePath?: string
+  /** 图片宽度占页面宽度的比例 0 ~ 1 */
+  imageScale: number
+  /** 需要加水印的页面，空表示全部 */
+  ranges?: string
+  output: OutputTarget
+  fileName: string
+}
+
+export type NumberPosition = 'tl' | 'tc' | 'tr' | 'bl' | 'bc' | 'br'
+export type NumberFormat = 'n' | 'n-total' | 'cn' | 'cn-total' | 'dash' | 'page-of'
+
+export interface PageNumberJob {
+  type: 'pdf-page-numbers'
+  path: string
+  position: NumberPosition
+  format: NumberFormat
+  start: number
+  fontSize: number
+  color: string
+  marginMm: number
+  /** 需要加页码的页面，空表示全部 */
+  ranges?: string
+  output: OutputTarget
+  fileName: string
+}
+
+export type Job = MergeJob | SplitJob | ImagesToPdfJob | PageEditJob | WatermarkJob | PageNumberJob
 
 export interface JobProgress {
   jobId: string

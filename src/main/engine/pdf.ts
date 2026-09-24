@@ -13,12 +13,12 @@ import { detectImageKind, orientedMatrix, readJpegOrientation, swapsDimensions }
 import { UserError, parseRangeGroups, parseRanges } from '../../shared/ranges'
 
 export type Progress = (ratio: number, message: string) => void
-const noop: Progress = () => {}
+export const noop: Progress = () => {}
 
 const PRODUCER = '轻匣'
-const MM_TO_PT = 72 / 25.4
+export const MM_TO_PT = 72 / 25.4
 
-function newDocument(): Promise<PDFDocument> {
+export function newDocument(): Promise<PDFDocument> {
   return PDFDocument.create().then((doc) => {
     doc.setProducer(PRODUCER)
     doc.setCreator(PRODUCER)
@@ -55,7 +55,7 @@ export async function pdfMeta(path: string): Promise<PdfMeta> {
   }
 }
 
-async function save(doc: PDFDocument, path: string): Promise<void> {
+export async function save(doc: PDFDocument, path: string): Promise<void> {
   const bytes = await doc.save({ useObjectStreams: true })
   await writeFileAtomic(path, bytes)
 }

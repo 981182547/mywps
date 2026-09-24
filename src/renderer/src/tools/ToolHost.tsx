@@ -1,6 +1,9 @@
 import type { FileInfo } from '../../../shared/types'
 import { ImagesToPdfTool } from './ImagesToPdfTool'
 import { MergeTool } from './MergeTool'
+import { PageNumberTool } from './PageNumberTool'
+import { PageOrganizer } from './PageOrganizer'
+import { WatermarkTool } from './WatermarkTool'
 import { SplitTool } from './SplitTool'
 import { toolById, type ToolId } from './registry'
 
@@ -21,6 +24,16 @@ export function ToolHost({ id, initialFiles, onBack }: Props) {
       return <SplitTool tool={tool} initialFiles={initialFiles} onBack={onBack} initialMode="extract" />
     case 'images-to-pdf':
       return <ImagesToPdfTool tool={tool} initialFiles={initialFiles} onBack={onBack} />
+    case 'pdf-rotate':
+      return <PageOrganizer tool={tool} initialFiles={initialFiles} onBack={onBack} mode="rotate" />
+    case 'pdf-delete':
+      return <PageOrganizer tool={tool} initialFiles={initialFiles} onBack={onBack} mode="delete" />
+    case 'pdf-reorder':
+      return <PageOrganizer tool={tool} initialFiles={initialFiles} onBack={onBack} mode="reorder" />
+    case 'pdf-watermark':
+      return <WatermarkTool tool={tool} initialFiles={initialFiles} onBack={onBack} />
+    case 'pdf-page-numbers':
+      return <PageNumberTool tool={tool} initialFiles={initialFiles} onBack={onBack} />
     default:
       return null
   }
