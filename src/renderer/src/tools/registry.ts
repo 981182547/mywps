@@ -1,0 +1,135 @@
+import type { LucideIcon } from 'lucide-react'
+import {
+  ArrowLeftRight,
+  Combine,
+  Droplets,
+  FileArchive,
+  FileImage,
+  FileLock2,
+  FileOutput,
+  FileSpreadsheet,
+  FileText,
+  FileType2,
+  Hash,
+  ImageDown,
+  ImagePlus,
+  Images,
+  KeyRound,
+  Layers,
+  ListOrdered,
+  PenLine,
+  Presentation,
+  RotateCw,
+  ScanText,
+  Scaling,
+  Scissors,
+  ShieldCheck,
+  Trash2
+} from 'lucide-react'
+
+export type CategoryId = 'pdf' | 'convert' | 'image' | 'security' | 'compress' | 'ocr'
+
+export interface Category {
+  id: CategoryId
+  name: string
+  desc: string
+  icon: LucideIcon
+  /** 图标底色渐变 */
+  tint: string
+}
+
+export const CATEGORIES: Category[] = [
+  { id: 'pdf', name: 'PDF 工具', desc: '合并、拆分、提取、旋转与页面整理', icon: FileText, tint: 'rose' },
+  { id: 'convert', name: '格式转换', desc: 'PDF、Office 与图片之间互相转换', icon: ArrowLeftRight, tint: 'blue' },
+  { id: 'image', name: '图片工具', desc: '格式转换、压缩与调整尺寸', icon: Images, tint: 'green' },
+  { id: 'security', name: '安全与签名', desc: '加密、解密、签名与盖章', icon: ShieldCheck, tint: 'amber' },
+  { id: 'compress', name: '压缩瘦身', desc: '减小 PDF 与文档体积', icon: FileArchive, tint: 'violet' },
+  { id: 'ocr', name: '文字识别', desc: '从图片和扫描件中提取文字', icon: ScanText, tint: 'cyan' }
+]
+
+export type ToolId =
+  | 'pdf-merge'
+  | 'pdf-split'
+  | 'pdf-extract'
+  | 'images-to-pdf'
+  | 'pdf-rotate'
+  | 'pdf-delete'
+  | 'pdf-reorder'
+  | 'pdf-watermark'
+  | 'pdf-page-numbers'
+  | 'pdf-to-images'
+  | 'pdf-to-word'
+  | 'word-to-pdf'
+  | 'excel-to-pdf'
+  | 'ppt-to-pdf'
+  | 'image-convert'
+  | 'image-compress'
+  | 'image-resize'
+  | 'pdf-encrypt'
+  | 'pdf-decrypt'
+  | 'pdf-sign'
+  | 'pdf-compress'
+  | 'ocr-image'
+
+export interface ToolDef {
+  id: ToolId
+  name: string
+  desc: string
+  category: CategoryId
+  icon: LucideIcon
+  keywords: string[]
+  ready: boolean
+  /** 可接受的文件扩展名（用于拖放推荐） */
+  accepts: string[]
+}
+
+const PDF = ['pdf']
+export const IMAGE_EXTS = ['jpg', 'jpeg', 'png']
+
+export const TOOLS: ToolDef[] = [
+  { id: 'pdf-merge', name: 'PDF 合并', desc: '把多个 PDF 按顺序合成一个，可只选部分页面', category: 'pdf', icon: Combine, keywords: ['合并', 'merge', '拼接', '组合'], ready: true, accepts: PDF },
+  { id: 'pdf-split', name: 'PDF 拆分', desc: '按固定页数或自定义范围，拆成多个 PDF', category: 'pdf', icon: Scissors, keywords: ['拆分', 'split', '分割'], ready: true, accepts: PDF },
+  { id: 'pdf-extract', name: '提取页面', desc: '挑出需要的页面，另存为一个新 PDF', category: 'pdf', icon: FileOutput, keywords: ['提取', 'extract', '抽取', '选页'], ready: true, accepts: PDF },
+  { id: 'images-to-pdf', name: '图片转 PDF', desc: '多张图片合成一个 PDF，自动纠正照片方向', category: 'convert', icon: ImagePlus, keywords: ['图片', 'image', 'jpg', 'png', '照片', '转换'], ready: true, accepts: IMAGE_EXTS },
+  { id: 'pdf-rotate', name: '旋转页面', desc: '旋转全部或指定页面', category: 'pdf', icon: RotateCw, keywords: ['旋转', 'rotate'], ready: false, accepts: PDF },
+  { id: 'pdf-delete', name: '删除页面', desc: '删除不需要的页面', category: 'pdf', icon: Trash2, keywords: ['删除', 'delete'], ready: false, accepts: PDF },
+  { id: 'pdf-reorder', name: '页面排序', desc: '拖动缩略图调整页面顺序', category: 'pdf', icon: ListOrdered, keywords: ['排序', '顺序', 'reorder'], ready: false, accepts: PDF },
+  { id: 'pdf-watermark', name: '添加水印', desc: '文字或图片水印，可调透明度与角度', category: 'pdf', icon: Droplets, keywords: ['水印', 'watermark'], ready: false, accepts: PDF },
+  { id: 'pdf-page-numbers', name: '添加页码', desc: '在页眉或页脚添加页码', category: 'pdf', icon: Hash, keywords: ['页码', 'page number'], ready: false, accepts: PDF },
+  { id: 'pdf-to-images', name: 'PDF 转图片', desc: '每页导出为高清 JPG 或 PNG', category: 'convert', icon: FileImage, keywords: ['图片', 'jpg', 'png', '转换'], ready: false, accepts: PDF },
+  { id: 'pdf-to-word', name: 'PDF 转 Word', desc: '转换为可编辑的 Word 文档', category: 'convert', icon: FileType2, keywords: ['word', 'docx', '转换'], ready: false, accepts: PDF },
+  { id: 'word-to-pdf', name: 'Word 转 PDF', desc: 'doc、docx、wps 转为 PDF', category: 'convert', icon: FileText, keywords: ['word', 'docx', 'doc', '转换'], ready: false, accepts: ['doc', 'docx', 'wps'] },
+  { id: 'excel-to-pdf', name: 'Excel 转 PDF', desc: 'xls、xlsx、et 转为 PDF', category: 'convert', icon: FileSpreadsheet, keywords: ['excel', 'xlsx', '表格'], ready: false, accepts: ['xls', 'xlsx', 'et'] },
+  { id: 'ppt-to-pdf', name: 'PPT 转 PDF', desc: 'ppt、pptx、dps 转为 PDF', category: 'convert', icon: Presentation, keywords: ['ppt', 'pptx', '幻灯片'], ready: false, accepts: ['ppt', 'pptx', 'dps'] },
+  { id: 'image-convert', name: '图片格式转换', desc: 'JPG、PNG、WEBP、HEIC 等互转', category: 'image', icon: Layers, keywords: ['格式', 'webp', 'heic'], ready: false, accepts: IMAGE_EXTS },
+  { id: 'image-compress', name: '图片压缩', desc: '在清晰度与体积之间取得平衡', category: 'image', icon: ImageDown, keywords: ['压缩', '减小'], ready: false, accepts: IMAGE_EXTS },
+  { id: 'image-resize', name: '调整尺寸', desc: '按像素或比例缩放，支持证件照尺寸', category: 'image', icon: Scaling, keywords: ['尺寸', '大小', '缩放'], ready: false, accepts: IMAGE_EXTS },
+  { id: 'pdf-encrypt', name: 'PDF 加密', desc: '设置打开密码与权限', category: 'security', icon: FileLock2, keywords: ['加密', '密码'], ready: false, accepts: PDF },
+  { id: 'pdf-decrypt', name: 'PDF 解密', desc: '移除已知的密码', category: 'security', icon: KeyRound, keywords: ['解密', '去密码'], ready: false, accepts: PDF },
+  { id: 'pdf-sign', name: '签名与盖章', desc: '手写签名、电子印章与骑缝章', category: 'security', icon: PenLine, keywords: ['签名', '盖章', '印章'], ready: false, accepts: PDF },
+  { id: 'pdf-compress', name: 'PDF 压缩', desc: '三档压缩强度，显示压缩前后大小', category: 'compress', icon: FileArchive, keywords: ['压缩', '瘦身', '减小'], ready: false, accepts: PDF },
+  { id: 'ocr-image', name: '图片转文字', desc: '识别图片中的中英文', category: 'ocr', icon: ScanText, keywords: ['ocr', '识别', '文字'], ready: false, accepts: IMAGE_EXTS }
+]
+
+export function toolById(id: ToolId): ToolDef {
+  return TOOLS.find((t) => t.id === id)!
+}
+
+export function categoryById(id: CategoryId): Category {
+  return CATEGORIES.find((c) => c.id === id)!
+}
+
+export function searchTools(q: string): ToolDef[] {
+  const s = q.trim().toLowerCase()
+  if (!s) return TOOLS
+  return TOOLS.filter(
+    (t) => t.name.toLowerCase().includes(s) || t.desc.toLowerCase().includes(s) || t.keywords.some((k) => k.toLowerCase().includes(s))
+  )
+}
+
+/** 根据拖入的文件类型推荐可用的工具 */
+export function suggestTools(exts: string[]): ToolDef[] {
+  const set = new Set(exts)
+  if (set.size === 0) return []
+  return TOOLS.filter((t) => t.ready && [...set].every((e) => t.accepts.includes(e)))
+}
