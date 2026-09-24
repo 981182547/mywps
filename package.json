@@ -13,9 +13,9 @@
     "test": "vitest run",
     "test:e2e": "npm run build && playwright test",
     "check": "npm run typecheck && npm test && npm run test:e2e",
-    "dist:win": "npm run build && node scripts/win-natives.mjs && electron-builder --win",
-    "dist:mac": "npm run build && electron-builder --mac",
-    "dist:linux": "npm run build && electron-builder --linux",
+    "dist:win": "npm run build && node scripts/win-natives.mjs && electron-builder --win --publish never",
+    "dist:mac": "npm run build && electron-builder --mac --publish never",
+    "dist:linux": "npm run build && electron-builder --linux --publish never",
     "pack": "npm run build && electron-builder --dir"
   },
   "devDependencies": {
