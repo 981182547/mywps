@@ -156,7 +156,7 @@ export function RunFooter({
 }
 
 /** 处理完成后的结果视图 */
-export function ResultView({ outputs, onReset }: { outputs: string[]; onReset: () => void }) {
+export function ResultView({ outputs, notes = [], failures = [], onReset }: { outputs: string[]; notes?: string[]; failures?: string[]; onReset: () => void }) {
   const single = outputs.length === 1
   return (
     <div className="result" data-testid="result">
@@ -165,6 +165,26 @@ export function ResultView({ outputs, onReset }: { outputs: string[]; onReset: (
       </div>
       <h3>处理完成</h3>
       <p>{single ? '已生成 1 个文件' : `已生成 ${outputs.length} 个文件`}</p>
+      {failures.length > 0 && (
+        <div className="alert error" style={{ marginTop: 12, textAlign: 'left', width: '100%' }}>
+          <AlertCircle size={16} />
+          <span>
+            {failures.length} 个文件未能处理：
+            {failures.map((f) => (
+              <span key={f} style={{ display: 'block' }}>
+                {f}
+              </span>
+            ))}
+          </span>
+        </div>
+      )}
+      {notes.length > 0 && (
+        <div className="result-notes" data-testid="result-notes">
+          {notes.map((n, i) => (
+            <div key={i}>{n}</div>
+          ))}
+        </div>
+      )}
       <div className="result-files">
         {outputs.map((p) => (
           <button key={p} className="result-file" onClick={() => window.qx.openPath(p)} title={p}>

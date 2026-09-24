@@ -67,8 +67,8 @@ export function Home({ onOpenTool }: Props) {
           </div>
           <div className="dh-formats">
             <span className="chip">PDF</span>
-            <span className="chip">JPG</span>
-            <span className="chip">PNG</span>
+            <span className="chip">图片</span>
+            <span className="chip">HEIC</span>
           </div>
         </div>
       )}
@@ -157,7 +157,7 @@ function SuggestPopup({ files, onClose, onOpenTool }: { files: FileInfo[]; onClo
         ) : (
           <div className="alert info">
             <FileQuestion size={16} />
-            <span>暂时没有能直接处理这些文件的工具。目前支持 PDF、JPG、PNG，更多格式正在开发中；如果选了多种类型的文件，可以分开处理。</span>
+            <span>暂时没有能直接处理这些文件的工具。目前支持 PDF 和常见图片格式；如果选了多种类型的文件，可以分开处理。</span>
           </div>
         )}
         <div className="foot">

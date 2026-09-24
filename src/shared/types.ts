@@ -134,7 +134,59 @@ export interface PdfToPptJob {
   output: OutputTarget
 }
 
+export type ImageFormat = 'jpg' | 'png' | 'webp' | 'avif' | 'tiff' | 'bmp' | 'ico' | 'gif'
+
+/** 批量任务的输出：dir 为空表示各自保存在源文件所在文件夹 */
+export interface BatchOutput {
+  dir?: string
+}
+
+export interface ImageConvertJob {
+  type: 'image-convert'
+  paths: string[]
+  format: ImageFormat
+  quality: number
+  background: string
+  output: BatchOutput
+}
+
+export interface ImageCompressJob {
+  type: 'image-compress'
+  paths: string[]
+  mode: 'quality' | 'target'
+  quality: number
+  targetKB: number
+  /** 可选：宽度超过此值时等比缩小 */
+  maxWidth?: number
+  output: BatchOutput
+}
+
+export interface ImageResizeJob {
+  type: 'image-resize'
+  paths: string[]
+  mode: 'percent' | 'width' | 'height' | 'box'
+  percent: number
+  width: number
+  height: number
+  fit: 'contain' | 'cover' | 'fill'
+  background: string
+  /** 为空时保持原格式 */
+  format?: ImageFormat
+  output: BatchOutput
+}
+
+export interface BatchResult {
+  outputs: string[]
+  /** 每个文件的说明，例如压缩前后大小 */
+  notes: string[]
+  /** 失败的文件及原因 */
+  failures: string[]
+}
+
 export type Job =
+  | ImageConvertJob
+  | ImageCompressJob
+  | ImageResizeJob
   | MergeJob
   | SplitJob
   | ImagesToPdfJob
@@ -154,6 +206,16 @@ export interface JobProgress {
 
 export interface JobResult {
   outputs: string[]
+  notes?: string[]
+  failures?: string[]
+}
+
+export interface ImageThumb {
+  /** JPEG/PNG data URL */
+  url: string
+  /** 原图像素尺寸（已按方向摆正） */
+  width: number
+  height: number
 }
 
 export interface PdfMeta {
@@ -168,6 +230,7 @@ export interface QingxiangApi {
   statFiles(paths: string[]): Promise<FileInfo[]>
   readFile(path: string): Promise<Uint8Array>
   pdfMeta(path: string): Promise<PdfMeta>
+  imageThumb(path: string, size: number): Promise<ImageThumb | null>
   runJob(jobId: string, job: Job): Promise<JobResult>
   cancelJob(jobId: string): void
   onJobProgress(handler: (p: JobProgress) => void): () => void

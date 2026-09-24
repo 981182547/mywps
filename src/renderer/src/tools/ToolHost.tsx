@@ -1,6 +1,7 @@
 import type { FileInfo } from '../../../shared/types'
 import { PdfToImagesTool, PdfToPptTool, PdfToTextTool } from './ConvertTools'
 import { ImagesToPdfTool } from './ImagesToPdfTool'
+import { ImageCompressTool, ImageConvertTool, ImageResizeTool } from './ImageTools'
 import { MergeTool } from './MergeTool'
 import { PageNumberTool } from './PageNumberTool'
 import { PageOrganizer } from './PageOrganizer'
@@ -43,6 +44,12 @@ export function ToolHost({ id, initialFiles, onBack }: Props) {
       return <PdfToTextTool tool={tool} initialFiles={initialFiles} onBack={onBack} />
     case 'pdf-to-ppt':
       return <PdfToPptTool tool={tool} initialFiles={initialFiles} onBack={onBack} />
+    case 'image-convert':
+      return <ImageConvertTool tool={tool} initialFiles={initialFiles} onBack={onBack} />
+    case 'image-compress':
+      return <ImageCompressTool tool={tool} initialFiles={initialFiles} onBack={onBack} />
+    case 'image-resize':
+      return <ImageResizeTool tool={tool} initialFiles={initialFiles} onBack={onBack} />
     default:
       return null
   }

@@ -147,15 +147,6 @@ const PAGE_SIZES: Record<Exclude<ImagesToPdfJob['pageSize'], 'fit'>, [number, nu
   Letter: PageSizes.Letter as [number, number]
 }
 
-const KIND_NAMES: Record<string, string> = {
-  webp: 'WEBP',
-  gif: 'GIF',
-  bmp: 'BMP',
-  tiff: 'TIFF',
-  heic: 'HEIC',
-  unknown: '未知'
-}
-
 export async function imagesToPdf(job: ImagesToPdfJob, progress: Progress = noop): Promise<string[]> {
   if (job.images.length === 0) throw new UserError('请至少添加 1 张图片')
   const margin = Math.max(0, Math.min(50, job.marginMm || 0)) * MM_TO_PT
@@ -171,9 +162,14 @@ export async function imagesToPdf(job: ImagesToPdfJob, progress: Progress = noop
     } catch {
       throw new UserError(`无法读取图片“${name}”`)
     }
-    const kind = detectImageKind(bytes)
+    let kind = detectImageKind(bytes)
     if (kind !== 'png' && kind !== 'jpeg') {
-      throw new UserError(`“${name}”是 ${KIND_NAMES[kind]} 格式，目前仅支持 JPG 和 PNG 图片`)
+      if (kind === 'unknown') throw new UserError(`“${name}”不是支持的图片格式`)
+      // 其他格式（WEBP、HEIC、BMP、TIFF 等）先解码并摆正方向，再以 PNG 嵌入
+      const { decodeImage } = await import('./imagetools')
+      const { image } = await decodeImage(path)
+      bytes = new Uint8Array(await image.png({ compressionLevel: 6 }).toBuffer())
+      kind = 'png'
     }
     let image
     try {

@@ -1,6 +1,6 @@
 // 图片格式识别与 JPEG 方向（EXIF Orientation）读取
 
-export type ImageKind = 'png' | 'jpeg' | 'webp' | 'gif' | 'bmp' | 'tiff' | 'heic' | 'unknown'
+export type ImageKind = 'png' | 'jpeg' | 'webp' | 'gif' | 'bmp' | 'tiff' | 'heic' | 'avif' | 'ico' | 'svg' | 'unknown'
 
 export function detectImageKind(b: Uint8Array): ImageKind {
   const at = (i: number) => b[i] ?? -1
@@ -11,7 +11,14 @@ export function detectImageKind(b: Uint8Array): ImageKind {
   if ((at(0) === 0x49 && at(1) === 0x49 && at(2) === 0x2a) || (at(0) === 0x4d && at(1) === 0x4d && at(3) === 0x2a)) return 'tiff'
   const ascii = (s: number, e: number) => String.fromCharCode(...b.subarray(s, e))
   if (b.length >= 12 && ascii(0, 4) === 'RIFF' && ascii(8, 12) === 'WEBP') return 'webp'
-  if (b.length >= 12 && ascii(4, 8) === 'ftyp' && /^(heic|heix|mif1|msf1|heim|heis|avif)/.test(ascii(8, 12))) return 'heic'
+  if (b.length >= 12 && ascii(4, 8) === 'ftyp') {
+    const brand = ascii(8, 12)
+    if (brand === 'avif' || brand === 'avis') return 'avif'
+    if (/^(heic|heix|hevc|hevx|mif1|msf1|heim|heis)/.test(brand)) return 'heic'
+  }
+  if (at(0) === 0 && at(1) === 0 && at(2) === 1 && at(3) === 0) return 'ico'
+  const head = new TextDecoder().decode(b.subarray(0, 512)).trimStart()
+  if (head.startsWith('<svg') || (head.startsWith('<?xml') && head.includes('<svg'))) return 'svg'
   return 'unknown'
 }
 

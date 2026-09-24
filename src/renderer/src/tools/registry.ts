@@ -90,13 +90,13 @@ export interface ToolDef {
 }
 
 const PDF = ['pdf']
-export const IMAGE_EXTS = ['jpg', 'jpeg', 'png']
+export const IMAGE_EXTS = ['jpg', 'jpeg', 'png', 'webp', 'heic', 'heif', 'bmp', 'tif', 'tiff', 'gif', 'avif', 'ico', 'svg']
 
 export const TOOLS: ToolDef[] = [
   { id: 'pdf-merge', name: 'PDF 合并', desc: '把多个 PDF 按顺序合成一个，可只选部分页面', category: 'pdf', icon: Combine, keywords: ['合并', 'merge', '拼接', '组合'], ready: true, accepts: PDF },
   { id: 'pdf-split', name: 'PDF 拆分', desc: '按固定页数或自定义范围，拆成多个 PDF', category: 'pdf', icon: Scissors, keywords: ['拆分', 'split', '分割'], ready: true, accepts: PDF },
   { id: 'pdf-extract', name: '提取页面', desc: '挑出需要的页面，另存为一个新 PDF', category: 'pdf', icon: FileOutput, keywords: ['提取', 'extract', '抽取', '选页'], ready: true, accepts: PDF },
-  { id: 'images-to-pdf', name: '图片转 PDF', desc: '多张图片合成一个 PDF，自动纠正照片方向', category: 'convert', icon: ImagePlus, keywords: ['图片', 'image', 'jpg', 'png', '照片', '转换'], ready: true, accepts: IMAGE_EXTS },
+  { id: 'images-to-pdf', name: '图片转 PDF', desc: '多张图片合成一个 PDF，支持 HEIC 等格式，自动纠正方向', category: 'convert', icon: ImagePlus, keywords: ['图片', 'image', 'jpg', 'png', '照片', '转换'], ready: true, accepts: IMAGE_EXTS },
   { id: 'pdf-rotate', name: '旋转页面', desc: '旋转全部或指定页面，支持奇偶页快速选择', category: 'pdf', icon: RotateCw, keywords: ['旋转', 'rotate'], ready: true, accepts: PDF },
   { id: 'pdf-delete', name: '删除页面', desc: '点选缩略图删除不需要的页面，可撤销', category: 'pdf', icon: Trash2, keywords: ['删除', 'delete'], ready: true, accepts: PDF },
   { id: 'pdf-reorder', name: '页面排序', desc: '拖动缩略图调整页面顺序，一键倒序', category: 'pdf', icon: ListOrdered, keywords: ['排序', '顺序', 'reorder'], ready: true, accepts: PDF },
@@ -110,9 +110,9 @@ export const TOOLS: ToolDef[] = [
   { id: 'word-to-pdf', name: 'Word 转 PDF', desc: 'doc、docx、wps 转为 PDF', category: 'convert', icon: FileText, keywords: ['word', 'docx', 'doc', '转换'], ready: false, accepts: ['doc', 'docx', 'wps'] },
   { id: 'excel-to-pdf', name: 'Excel 转 PDF', desc: 'xls、xlsx、et 转为 PDF', category: 'convert', icon: FileSpreadsheet, keywords: ['excel', 'xlsx', '表格'], ready: false, accepts: ['xls', 'xlsx', 'et'] },
   { id: 'ppt-to-pdf', name: 'PPT 转 PDF', desc: 'ppt、pptx、dps 转为 PDF', category: 'convert', icon: Presentation, keywords: ['ppt', 'pptx', '幻灯片'], ready: false, accepts: ['ppt', 'pptx', 'dps'] },
-  { id: 'image-convert', name: '图片格式转换', desc: 'JPG、PNG、WEBP、HEIC 等互转', category: 'image', icon: Layers, keywords: ['格式', 'webp', 'heic'], ready: false, accepts: IMAGE_EXTS },
-  { id: 'image-compress', name: '图片压缩', desc: '在清晰度与体积之间取得平衡', category: 'image', icon: ImageDown, keywords: ['压缩', '减小'], ready: false, accepts: IMAGE_EXTS },
-  { id: 'image-resize', name: '调整尺寸', desc: '按像素或比例缩放，支持证件照尺寸', category: 'image', icon: Scaling, keywords: ['尺寸', '大小', '缩放'], ready: false, accepts: IMAGE_EXTS },
+  { id: 'image-convert', name: '图片格式转换', desc: 'HEIC、WEBP、PNG、JPG、BMP、ICO 等批量互转', category: 'image', icon: Layers, keywords: ['格式', 'webp', 'heic'], ready: true, accepts: IMAGE_EXTS },
+  { id: 'image-compress', name: '图片压缩', desc: '按清晰度或指定大小批量压缩，绝不越压越大', category: 'image', icon: ImageDown, keywords: ['压缩', '减小'], ready: true, accepts: IMAGE_EXTS },
+  { id: 'image-resize', name: '调整尺寸', desc: '按像素或比例缩放，支持证件照尺寸', category: 'image', icon: Scaling, keywords: ['尺寸', '大小', '缩放'], ready: true, accepts: IMAGE_EXTS },
   { id: 'pdf-encrypt', name: 'PDF 加密', desc: '设置打开密码与权限', category: 'security', icon: FileLock2, keywords: ['加密', '密码'], ready: false, accepts: PDF },
   { id: 'pdf-decrypt', name: 'PDF 解密', desc: '移除已知的密码', category: 'security', icon: KeyRound, keywords: ['解密', '去密码'], ready: false, accepts: PDF },
   { id: 'pdf-sign', name: '签名与盖章', desc: '手写签名、电子印章与骑缝章', category: 'security', icon: PenLine, keywords: ['签名', '盖章', '印章'], ready: false, accepts: PDF },

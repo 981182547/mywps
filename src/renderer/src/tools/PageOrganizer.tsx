@@ -274,7 +274,7 @@ export function PageOrganizer({ tool, initialFiles, onBack, mode }: { tool: Tool
 
   const side =
     job.state.status === 'done' ? (
-      <ResultView outputs={job.state.outputs} onReset={() => { job.reset(); pdf.clear(); setNameTouched(false) }} />
+      <ResultView outputs={job.state.outputs} notes={job.state.notes} failures={job.state.failures} onReset={() => { job.reset(); pdf.clear(); setNameTouched(false) }} />
     ) : (
       <>
         <div className="stat-grid">

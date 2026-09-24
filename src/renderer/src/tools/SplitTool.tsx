@@ -189,7 +189,7 @@ export function SplitTool({
 
   const side =
     job.state.status === 'done' ? (
-      <ResultView outputs={job.state.outputs} onReset={() => { job.reset(); setFile(null) }} />
+      <ResultView outputs={job.state.outputs} notes={job.state.notes} failures={job.state.failures} onReset={() => { job.reset(); setFile(null) }} />
     ) : (
       <>
         {extractOnly ? (

@@ -47,7 +47,7 @@ export function useFileDrop(onFiles: (files: FileInfo[]) => void) {
 export type JobState =
   | { status: 'idle' }
   | { status: 'running'; ratio: number; message: string }
-  | { status: 'done'; outputs: string[] }
+  | { status: 'done'; outputs: string[]; notes: string[]; failures: string[] }
   | { status: 'error'; message: string }
 
 function cleanError(e: unknown): string {
@@ -77,7 +77,7 @@ export function useJob() {
     })
     try {
       const r = await window.qx.runJob(id, job)
-      if (alive.current) setState({ status: 'done', outputs: r.outputs })
+      if (alive.current) setState({ status: 'done', outputs: r.outputs, notes: r.notes ?? [], failures: r.failures ?? [] })
     } catch (e) {
       const message = cleanError(e)
       if (alive.current) setState(message === '已取消' ? { status: 'idle' } : { status: 'error', message })

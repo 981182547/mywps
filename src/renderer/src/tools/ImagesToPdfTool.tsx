@@ -1,7 +1,7 @@
 import { ArrowDownAZ, ImagePlus, Plus, Trash2, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import type { FileInfo, OrientationOption, PageSizeOption } from '../../../shared/types'
-import { fileUrl } from '../components/Thumbs'
+import { ImageThumbView, useImageThumb } from '../components/ImageThumbView'
 import { dirOf, stemOf, uid } from '../lib/format'
 import { useFileDrop, useJob, useOutputDir, useReorder } from '../lib/hooks'
 import { Field, OutputField, ResultView, RunFooter, Segmented, ToolLayout } from './ToolLayout'
@@ -17,26 +17,9 @@ const IMAGE_FILTER = [{ name: '图片', extensions: IMAGE_EXTS }]
 type Margin = 'none' | 'small' | 'large'
 const MARGIN_MM: Record<Margin, number> = { none: 0, small: 6, large: 15 }
 
-/** 显示本地图片；开发模式下 file:// 被拦截时改用读取文件的方式 */
-function LocalImage({ path }: { path: string }) {
-  const [src, setSrc] = useState(() => fileUrl(path))
-  const [fallback, setFallback] = useState(false)
-  useEffect(() => {
-    return () => {
-      if (src.startsWith('blob:')) URL.revokeObjectURL(src)
-    }
-  }, [src])
-  const onError = async () => {
-    if (fallback) return
-    setFallback(true)
-    try {
-      const data = await window.qx.readFile(path)
-      setSrc(URL.createObjectURL(new Blob([data as BlobPart])))
-    } catch {
-      /* 保持占位 */
-    }
-  }
-  return <img src={src} alt="" loading="lazy" decoding="async" draggable={false} onError={onError} />
+function TileImage({ path, ext }: { path: string; ext: string }) {
+  const thumb = useImageThumb(path)
+  return <ImageThumbView thumb={thumb} ext={ext} />
 }
 
 export function ImagesToPdfTool({ tool, initialFiles, onBack }: { tool: ToolDef; initialFiles?: FileInfo[]; onBack: () => void }) {
@@ -91,7 +74,7 @@ export function ImagesToPdfTool({ tool, initialFiles, onBack }: { tool: ToolDef;
   const filesPanel = (
     <section className={`panel files-panel${dragging ? ' dragging' : ''}`} {...bind}>
       {items.length === 0 ? (
-        <EmptyDrop tool={tool} dragging={dragging} onPick={pick} title="添加要转换的图片" formats={['JPG', 'PNG']} hint="每张图片生成一页，可拖动调整顺序" />
+        <EmptyDrop tool={tool} dragging={dragging} onPick={pick} title="添加要转换的图片" formats={['JPG', 'PNG', 'HEIC', 'WEBP', 'BMP', 'TIFF']} hint="每张图片生成一页，可拖动调整顺序" />
       ) : (
         <>
           <div className="files-toolbar">
@@ -109,7 +92,7 @@ export function ImagesToPdfTool({ tool, initialFiles, onBack }: { tool: ToolDef;
               <ImagePlus size={14} /> 添加图片
             </button>
           </div>
-          <IgnoredNotice count={ignored} onClose={() => setIgnored(0)} what="JPG、PNG 图片" />
+          <IgnoredNotice count={ignored} onClose={() => setIgnored(0)} what="图片" />
           <div className="files-scroll" data-testid="file-list">
             <div className="image-grid">
               {items.map((it, i) => {
@@ -117,7 +100,7 @@ export function ImagesToPdfTool({ tool, initialFiles, onBack }: { tool: ToolDef;
                 return (
                   <div key={it.key} className={`image-tile${reorder.dragIndex === i ? ' dragged' : ''}${over}`} {...reorder.itemProps(i, false)} title={it.info.path}>
                     <div className="it-img">
-                      <LocalImage path={it.info.path} />
+                      <TileImage path={it.info.path} ext={it.info.ext} />
                     </div>
                     <div className="it-name">{it.info.name}</div>
                     <span className="it-index">{i + 1}</span>
@@ -142,7 +125,7 @@ export function ImagesToPdfTool({ tool, initialFiles, onBack }: { tool: ToolDef;
 
   const side =
     job.state.status === 'done' ? (
-      <ResultView outputs={job.state.outputs} onReset={() => { job.reset(); setItems([]); setNameTouched(false) }} />
+      <ResultView outputs={job.state.outputs} notes={job.state.notes} failures={job.state.failures} onReset={() => { job.reset(); setItems([]); setNameTouched(false) }} />
     ) : (
       <>
         <Field label="页面大小">

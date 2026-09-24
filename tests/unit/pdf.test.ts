@@ -175,10 +175,21 @@ describe('图片转 PDF', () => {
     expect(Math.round(doc.getPage(0).getHeight())).toBe(150)
   })
 
-  it('不支持的格式给出明确提示', async () => {
+  it('WEBP、HEIC、BMP、GIF、TIFF 也能转成 PDF', async () => {
+    const images = ['tiny.webp', 'photo.heic', 'photo.bmp', 'photo.gif', 'photo.tiff'].map((f) => join(FIX, f))
+    const out = await imagesToPdf({ type: 'images-to-pdf', images, pageSize: 'fit', orientation: 'auto', marginMm: 0, output: { dir }, fileName: 'x' })
+    const doc = await PDFDocument.load(await readFile(out[0]))
+    expect(doc.getPageCount()).toBe(5)
+    // BMP 200x100 像素 → 150x75 磅
+    expect(Math.round(doc.getPage(2).getWidth())).toBe(150)
+  })
+
+  it('不是图片的文件给出明确提示', async () => {
+    const txt = join(dir, '说明.jpg')
+    await writeFile(txt, 'hello')
     await expect(
-      imagesToPdf({ type: 'images-to-pdf', images: [join(FIX, 'tiny.webp')], pageSize: 'A4', orientation: 'auto', marginMm: 0, output: { dir }, fileName: 'x' })
-    ).rejects.toThrow('“tiny.webp”是 WEBP 格式，目前仅支持 JPG 和 PNG 图片')
+      imagesToPdf({ type: 'images-to-pdf', images: [txt], pageSize: 'A4', orientation: 'auto', marginMm: 0, output: { dir }, fileName: 'x' })
+    ).rejects.toThrow('“说明.jpg”不是支持的图片格式')
   })
 })
 

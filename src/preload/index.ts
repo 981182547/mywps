@@ -8,6 +8,7 @@ const api: QingxiangApi = {
   statFiles: (paths) => ipcRenderer.invoke('file:stat', paths),
   readFile: (path) => ipcRenderer.invoke('file:read', path),
   pdfMeta: (path) => ipcRenderer.invoke('pdf:meta', path),
+  imageThumb: (path, size) => ipcRenderer.invoke('image:thumb', path, size),
   runJob: (jobId, job) => ipcRenderer.invoke('job:run', jobId, job),
   cancelJob: (jobId) => ipcRenderer.send('job:cancel', jobId),
   onJobProgress: (handler) => {

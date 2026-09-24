@@ -1,9 +1,10 @@
 import { stat } from 'node:fs/promises'
 import { basename, extname, join } from 'node:path'
 import { BrowserWindow, Menu, app, dialog, ipcMain, nativeTheme, shell } from 'electron'
-import type { FileInfo, Job, JobProgress } from '../shared/types'
+import type { FileInfo, Job, JobProgress, JobResult } from '../shared/types'
 import { readBytes } from './engine/fsutil'
 import { pdfMeta } from './engine/pdf'
+import { imageThumb } from './engine/thumbs'
 import createJobWorker from './worker?nodeWorker'
 import type { WorkerMessage } from './worker'
 
@@ -76,9 +77,10 @@ function registerIpc(): void {
   ipcMain.handle('file:stat', (_e, paths: string[]) => statFiles(paths))
   ipcMain.handle('file:read', (_e, path: string) => readBytes(path))
   ipcMain.handle('pdf:meta', (_e, path: string) => pdfMeta(path))
+  ipcMain.handle('image:thumb', (_e, path: string, size: number) => imageThumb(path, size))
 
   ipcMain.handle('job:run', (e, jobId: string, job: Job) => {
-    return new Promise<{ outputs: string[] }>((resolve, reject) => {
+    return new Promise<JobResult>((resolve, reject) => {
       const worker = createJobWorker({ workerData: job })
       let settled = false
       runningJobs.set(jobId, {
@@ -96,7 +98,7 @@ function registerIpc(): void {
           if (!e.sender.isDestroyed()) e.sender.send('job:progress', p)
         } else if (m.kind === 'done') {
           settled = true
-          resolve({ outputs: m.outputs })
+          resolve(m.result)
         } else {
           settled = true
           if (!m.user) console.error(m.message)

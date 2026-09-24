@@ -1,17 +1,18 @@
 // 后台工作线程：执行耗时的文件处理，避免阻塞界面
 import { parentPort, workerData } from 'node:worker_threads'
-import type { Job } from '../shared/types'
-import { imagesToPdf, mergePdfs, splitPdf, type Progress } from './engine/pdf'
 import { UserError } from '../shared/ranges'
+import type { Job, JobResult } from '../shared/types'
+import { compressImages, convertImages, resizeImages } from './engine/imagetools'
 import { addPageNumbers, addWatermark, editPages } from './engine/pages'
+import { imagesToPdf, mergePdfs, splitPdf, type Progress } from './engine/pdf'
 import { pdfToImages, pdfToPpt, pdfToText } from './engine/render'
 
 export type WorkerMessage =
   | { kind: 'progress'; ratio: number; message: string }
-  | { kind: 'done'; outputs: string[] }
+  | { kind: 'done'; result: JobResult }
   | { kind: 'error'; message: string; user: boolean }
 
-function run(job: Job, progress: Progress): Promise<string[]> {
+function run(job: Job, progress: Progress): Promise<string[] | JobResult> {
   switch (job.type) {
     case 'pdf-merge':
       return mergePdfs(job, progress)
@@ -31,6 +32,12 @@ function run(job: Job, progress: Progress): Promise<string[]> {
       return pdfToText(job, progress)
     case 'pdf-to-ppt':
       return pdfToPpt(job, progress)
+    case 'image-convert':
+      return convertImages(job, progress)
+    case 'image-compress':
+      return compressImages(job, progress)
+    case 'image-resize':
+      return resizeImages(job, progress)
   }
 }
 
@@ -38,7 +45,7 @@ const port = parentPort!
 const post = (m: WorkerMessage) => port.postMessage(m)
 
 run(workerData as Job, (ratio, message) => post({ kind: 'progress', ratio, message }))
-  .then((outputs) => post({ kind: 'done', outputs }))
+  .then((r) => post({ kind: 'done', result: Array.isArray(r) ? { outputs: r } : r }))
   .catch((e: unknown) => {
     const user = e instanceof UserError
     post({ kind: 'error', message: user ? (e as Error).message : String((e as Error)?.stack ?? e), user })
