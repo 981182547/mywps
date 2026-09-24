@@ -15,10 +15,10 @@ export interface Ctx {
 }
 
 /** 设置 QX_APP_EXEC 为打包后的程序路径，即可对安装包版本运行同一套测试 */
-export function launchOptions(extraEnv: Record<string, string> = {}) {
+export function launchOptions(extraEnv: Record<string, string> = {}, files: string[] = []) {
   const env = { ...process.env, ELECTRON_RENDERER_URL: '', ...extraEnv } as Record<string, string>
   const exec = process.env.QX_APP_EXEC
-  return exec ? { executablePath: exec, args: ['--no-sandbox'], env } : { args: [ROOT, '--no-sandbox'], env }
+  return exec ? { executablePath: exec, args: ['--no-sandbox', ...files], env } : { args: [ROOT, '--no-sandbox', ...files], env }
 }
 
 export async function launch(extraEnv: Record<string, string> = {}): Promise<Ctx> {

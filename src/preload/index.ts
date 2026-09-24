@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer, webUtils } from 'electron'
-import type { JobProgress, QingxiangApi } from '../shared/types'
+import type { FileInfo, JobProgress, QingxiangApi } from '../shared/types'
 
 const api: QingxiangApi = {
   platform: process.platform,
@@ -18,6 +18,11 @@ const api: QingxiangApi = {
     const listener = (_e: unknown, p: JobProgress) => handler(p)
     ipcRenderer.on('job:progress', listener)
     return () => ipcRenderer.removeListener('job:progress', listener)
+  },
+  onOpenFiles: (handler) => {
+    const listener = (_e: unknown, files: FileInfo[]) => handler(files)
+    ipcRenderer.on('open-files', listener)
+    return () => ipcRenderer.removeListener('open-files', listener)
   },
   openPath: (path) => ipcRenderer.invoke('shell:open-path', path),
   showInFolder: (path) => ipcRenderer.send('shell:show-in-folder', path),

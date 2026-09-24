@@ -1,3 +1,4 @@
+import { statSync } from 'node:fs'
 import { stat } from 'node:fs/promises'
 import { basename, extname, join } from 'node:path'
 import { BrowserWindow, Menu, app, dialog, ipcMain, nativeTheme, shell } from 'electron'
@@ -36,6 +37,10 @@ function createWindow(): void {
   })
 
   mainWindow.once('ready-to-show', () => mainWindow?.show())
+  const initial = filesFromArgv(process.argv)
+  mainWindow.webContents.once('did-finish-load', () => {
+    if (mainWindow) void sendOpenFiles(mainWindow, initial)
+  })
   mainWindow.webContents.setWindowOpenHandler(() => ({ action: 'deny' }))
   mainWindow.webContents.on('will-navigate', (e) => e.preventDefault())
 
@@ -44,6 +49,24 @@ function createWindow(): void {
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
+}
+
+/** 命令行参数中的文件（拖到程序图标上、或“打开方式”选择本程序时） */
+function filesFromArgv(argv: string[]): string[] {
+  return argv.slice(1).filter((a) => {
+    if (a.startsWith('-')) return false
+    try {
+      return statSync(a).isFile()
+    } catch {
+      return false
+    }
+  })
+}
+
+async function sendOpenFiles(win: BrowserWindow, paths: string[]): Promise<void> {
+  if (!paths.length) return
+  const infos = await statFiles(paths)
+  if (infos.length) win.webContents.send('open-files', infos)
 }
 
 async function toFileInfo(path: string): Promise<FileInfo | null> {
@@ -149,10 +172,11 @@ function registerIpc(): void {
 if (!app.requestSingleInstanceLock()) {
   app.quit()
 } else {
-  app.on('second-instance', () => {
+  app.on('second-instance', (_e, argv) => {
     if (!mainWindow) return
     if (mainWindow.isMinimized()) mainWindow.restore()
     mainWindow.focus()
+    void sendOpenFiles(mainWindow, filesFromArgv(argv))
   })
 
   app.whenReady().then(() => {

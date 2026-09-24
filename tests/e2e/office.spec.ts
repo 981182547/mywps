@@ -4,9 +4,11 @@ import { join } from 'node:path'
 import { expect, test } from '@playwright/test'
 import { Document, HeadingLevel, Packer, Paragraph, Table, TableCell, TableRow, WidthType } from 'docx'
 import ExcelJS from 'exceljs'
+import { findLibreOffice } from '../../src/main/engine/office'
 import { close, launch, loadPdf, mockOpenDialog, openTool, shot, type Ctx } from './helpers'
 
 test.describe('已安装办公软件', () => {
+  test.skip(!findLibreOffice(), '未安装 LibreOffice，跳过 Office 转换测试')
   let ctx: Ctx
   test.beforeAll(async () => {
     ctx = await launch()

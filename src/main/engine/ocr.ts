@@ -26,9 +26,11 @@ async function tessdataDir(lang: OcrLang): Promise<string> {
   const dst = join(dir, `${name}.traineddata.gz`)
   if (!existsSync(dst) || statSync(dst).size !== statSync(src).size) {
     await mkdir(dir, { recursive: true })
-    const tmp = `${dst}.${process.pid}.tmp`
+    const tmp = `${dst}.${process.pid}.${Date.now()}.tmp`
     await copyFile(src, tmp)
-    const { rename } = await import('node:fs/promises')
+    const { rename, rm } = await import('node:fs/promises')
+    // Windows 上不能直接覆盖已存在的文件
+    await rm(dst, { force: true })
     await rename(tmp, dst)
   }
   return dir

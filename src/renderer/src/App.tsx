@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import type { FileInfo } from '../../shared/types'
 import { Sidebar } from './components/Sidebar'
 import { TitleBar } from './components/TitleBar'
@@ -25,6 +25,17 @@ export function App() {
     []
   )
 
+  // 从程序图标或“打开方式”传入的文件：回到首页并推荐工具
+  const [incoming, setIncoming] = useState<{ files: FileInfo[]; seq: number } | null>(null)
+  useEffect(
+    () =>
+      window.qx.onOpenFiles((files) => {
+        setRoute({ view: 'home' })
+        setIncoming((prev) => ({ files, seq: (prev?.seq ?? 0) + 1 }))
+      }),
+    []
+  )
+
   const goBack = useCallback(() => {
     setRoute((r) => (r.view === 'tool' && r.from !== 'home' ? { view: 'category', id: r.from } : { view: 'home' }))
   }, [])
@@ -40,7 +51,7 @@ export function App() {
         onCategory={(id) => setRoute({ view: 'category', id })}
       />
       <main className="main" id="main">
-        {route.view === 'home' && <Home onOpenTool={openTool} />}
+        {route.view === 'home' && <Home onOpenTool={openTool} incoming={incoming} onIncomingHandled={() => setIncoming(null)} />}
         {route.view === 'category' && <CategoryPage key={route.id} id={route.id} onOpenTool={openTool} />}
         {route.view === 'tool' && <ToolHost key={toolKey} id={route.id} initialFiles={route.files} onBack={goBack} />}
       </main>

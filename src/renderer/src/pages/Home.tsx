@@ -7,11 +7,13 @@ import { CATEGORIES, TOOLS, categoryById, searchTools, suggestTools, type ToolId
 
 interface Props {
   onOpenTool: (id: ToolId, files?: FileInfo[]) => void
+  incoming?: { files: FileInfo[]; seq: number } | null
+  onIncomingHandled?: () => void
 }
 
 const FEATURED: ToolId[] = ['pdf-merge', 'pdf-split', 'images-to-pdf', 'pdf-extract']
 
-export function Home({ onOpenTool }: Props) {
+export function Home({ onOpenTool, incoming, onIncomingHandled }: Props) {
   const [query, setQuery] = useState('')
   const [dropped, setDropped] = useState<FileInfo[] | null>(null)
   const searchRef = useRef<HTMLInputElement>(null)
@@ -28,6 +30,13 @@ export function Home({ onOpenTool }: Props) {
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [])
+
+  useEffect(() => {
+    if (!incoming?.files.length) return
+    setDropped(incoming.files)
+    onIncomingHandled?.()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [incoming])
 
   const results = useMemo(() => searchTools(query), [query])
 
@@ -127,7 +136,7 @@ export function Home({ onOpenTool }: Props) {
   )
 }
 
-function SuggestPopup({ files, onClose, onOpenTool }: { files: FileInfo[]; onClose: () => void; onOpenTool: Props['onOpenTool'] }) {
+function SuggestPopup({ files, onClose, onOpenTool }: { files: FileInfo[]; onClose: () => void; onOpenTool: (id: ToolId, files?: FileInfo[]) => void }) {
   const exts = [...new Set(files.map((f) => f.ext))]
   const tools = suggestTools(exts)
   const kinds = exts.map((e) => e.toUpperCase() || '无扩展名').join('、')

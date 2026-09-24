@@ -391,6 +391,7 @@ export interface QingxiangApi {
   runJob(jobId: string, job: Job): Promise<JobResult>
   cancelJob(jobId: string): void
   onJobProgress(handler: (p: JobProgress) => void): () => void
+  onOpenFiles(handler: (files: FileInfo[]) => void): () => void
   openPath(path: string): Promise<void>
   showInFolder(path: string): void
   pathForFile(file: File): string
