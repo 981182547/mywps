@@ -1,6 +1,8 @@
 import { stat } from 'node:fs/promises'
 import { basename, extname, join } from 'node:path'
 import { BrowserWindow, Menu, app, dialog, ipcMain, nativeTheme, shell } from 'electron'
+import { killTree } from './engine/child'
+import { officeStatus } from './engine/office'
 import type { FileInfo, Job, JobProgress, JobResult } from '../shared/types'
 import { readBytes } from './engine/fsutil'
 import { pdfMeta } from './engine/pdf'
@@ -79,23 +81,32 @@ function registerIpc(): void {
   ipcMain.handle('file:read', (_e, path: string) => readBytes(path))
   ipcMain.handle('pdf:meta', (_e, path: string) => pdfMeta(path))
   ipcMain.handle('pdf:encryption', async (_e, path: string) => encryptionState(await readBytes(path)).catch(() => 'none' as const))
+  ipcMain.handle('office:status', (_e, refresh?: boolean) => officeStatus(!!refresh))
+  ipcMain.on('shell:open-external', (_e, url: string) => {
+    // 只允许打开白名单内的网址
+    if (/^https:\/\/(www\.)?libreoffice\.org\//.test(url)) shell.openExternal(url)
+  })
   ipcMain.handle('image:thumb', (_e, path: string, size: number) => imageThumb(path, size))
 
   ipcMain.handle('job:run', (e, jobId: string, job: Job) => {
     return new Promise<JobResult>((resolve, reject) => {
       const worker = createJobWorker({ workerData: job })
+      const children: number[] = []
       let settled = false
       runningJobs.set(jobId, {
         cancel: () => {
           if (settled) return
           settled = true
           worker.terminate()
+          children.forEach(killTree)
           reject(new Error('已取消'))
         }
       })
       worker.on('exit', () => runningJobs.delete(jobId))
       worker.on('message', (m: WorkerMessage) => {
-        if (m.kind === 'progress') {
+        if (m.kind === 'child') {
+          children.push(m.pid)
+        } else if (m.kind === 'progress') {
           const p: JobProgress = { jobId, ratio: m.ratio, message: m.message }
           if (!e.sender.isDestroyed()) e.sender.send('job:progress', p)
         } else if (m.kind === 'done') {

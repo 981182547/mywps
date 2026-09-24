@@ -9,9 +9,13 @@ import { pdfToImages, pdfToPpt, pdfToText } from './engine/render'
 import { compressPdf } from './engine/compress'
 import { decryptPdf, encryptPdf, repairPdf } from './engine/security'
 import { signPdf } from './engine/sign'
+import { officeConvert, officeToPdf } from './engine/office'
+import { pdfToExcel, pdfToWord } from './engine/pdf2office'
+import { onChildProcess } from './engine/child'
 
 export type WorkerMessage =
   | { kind: 'progress'; ratio: number; message: string }
+  | { kind: 'child'; pid: number }
   | { kind: 'done'; result: JobResult }
   | { kind: 'error'; message: string; user: boolean }
 
@@ -51,11 +55,21 @@ function run(job: Job, progress: Progress): Promise<string[] | JobResult> {
       return repairPdf(job, progress)
     case 'pdf-sign':
       return signPdf(job, progress)
+    case 'office-to-pdf':
+      return officeToPdf(job, progress)
+    case 'office-convert':
+      return officeConvert(job, progress)
+    case 'pdf-to-word':
+      return pdfToWord(job, progress)
+    case 'pdf-to-excel':
+      return pdfToExcel(job, progress)
   }
 }
 
 const port = parentPort!
 const post = (m: WorkerMessage) => port.postMessage(m)
+// 外部进程（LibreOffice 等）登记到主进程，取消任务时一并结束
+onChildProcess((pid) => post({ kind: 'child', pid }))
 
 run(workerData as Job, (ratio, message) => post({ kind: 'progress', ratio, message }))
   .then((r) => post({ kind: 'done', result: Array.isArray(r) ? { outputs: r } : r }))

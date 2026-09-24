@@ -2375,3 +2375,64 @@ select.input {
   color: var(--accent-text);
   background: var(--accent-soft);
 }
+
+/* ============ Office 文档 ============ */
+.engine-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 14px 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  font-size: 12.5px;
+  color: var(--text-2);
+}
+.engine-banner.ok svg {
+  color: var(--success);
+}
+.engine-banner.missing {
+  align-items: flex-start;
+  background: color-mix(in srgb, var(--warning) 10%, var(--surface));
+  border-color: color-mix(in srgb, var(--warning) 35%, transparent);
+  line-height: 1.6;
+}
+.engine-banner.missing > svg {
+  color: var(--warning);
+  margin-top: 2px;
+  flex: none;
+}
+.engine-banner.missing b {
+  color: var(--text);
+}
+.spin {
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.doc-icon {
+  width: 36px;
+  height: 44px;
+  flex: none;
+  border-radius: 7px;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  font-size: 15px;
+  color: #fff;
+  background: linear-gradient(145deg, #94a3b8, #64748b);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+.doc-icon.doc-w {
+  background: linear-gradient(145deg, #3b82f6, #1d4ed8);
+}
+.doc-icon.doc-x {
+  background: linear-gradient(145deg, #22c55e, #15803d);
+}
+.doc-icon.doc-p {
+  background: linear-gradient(145deg, #fb923c, #ea580c);
+}

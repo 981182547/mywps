@@ -14,9 +14,9 @@ export interface Ctx {
   dir: string
 }
 
-export async function launch(): Promise<Ctx> {
+export async function launch(extraEnv: Record<string, string> = {}): Promise<Ctx> {
   const dir = await mkdtemp(join(tmpdir(), 'qx-e2e-'))
-  const app = await electron.launch({ args: [ROOT, '--no-sandbox'], env: { ...process.env, ELECTRON_RENDERER_URL: '' } })
+  const app = await electron.launch({ args: [ROOT, '--no-sandbox'], env: { ...process.env, ELECTRON_RENDERER_URL: '', ...extraEnv } })
   const page = await app.firstWindow()
   await page.setViewportSize({ width: 1280, height: 800 })
   await app.evaluate(({ shell }) => {

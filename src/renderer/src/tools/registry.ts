@@ -22,9 +22,11 @@ import {
   PenLine,
   Presentation,
   RotateCw,
+  RefreshCcw,
   ScanText,
   Scaling,
   Scissors,
+  Sheet,
   ShieldCheck,
   Trash2,
   Type,
@@ -69,6 +71,8 @@ export type ToolId =
   | 'word-to-pdf'
   | 'excel-to-pdf'
   | 'ppt-to-pdf'
+  | 'pdf-to-excel'
+  | 'office-convert'
   | 'image-convert'
   | 'image-compress'
   | 'image-resize'
@@ -92,6 +96,7 @@ export interface ToolDef {
 }
 
 const PDF = ['pdf']
+const OFFICE_ALL = ['doc', 'docx', 'docm', 'dot', 'dotx', 'wps', 'wpt', 'rtf', 'odt', 'xls', 'xlsx', 'xlsm', 'xlt', 'xltx', 'et', 'ett', 'ods', 'ppt', 'pptx', 'pptm', 'pps', 'ppsx', 'pot', 'potx', 'dps', 'dpt', 'odp']
 export const IMAGE_EXTS = ['jpg', 'jpeg', 'png', 'webp', 'heic', 'heif', 'bmp', 'tif', 'tiff', 'gif', 'avif', 'ico', 'svg']
 
 export const TOOLS: ToolDef[] = [
@@ -108,10 +113,12 @@ export const TOOLS: ToolDef[] = [
   { id: 'pdf-to-long-image', name: 'PDF 转长图', desc: '所有页面拼成一张长图，方便手机查看', category: 'convert', icon: GalleryVertical, keywords: ['长图', '图片', '手机'], ready: true, accepts: PDF },
   { id: 'pdf-to-txt', name: 'PDF 转文字', desc: '提取文字保存为 TXT，支持中文排版', category: 'convert', icon: Type, keywords: ['文字', 'txt', '文本', '提取'], ready: true, accepts: PDF },
   { id: 'pdf-to-ppt', name: 'PDF 转 PPT', desc: '每页生成一张幻灯片，版面不变', category: 'convert', icon: MonitorPlay, keywords: ['ppt', 'pptx', '幻灯片', '演示'], ready: true, accepts: PDF },
-  { id: 'pdf-to-word', name: 'PDF 转 Word', desc: '转换为可编辑的 Word 文档', category: 'convert', icon: FileType2, keywords: ['word', 'docx', '转换'], ready: false, accepts: PDF },
-  { id: 'word-to-pdf', name: 'Word 转 PDF', desc: 'doc、docx、wps 转为 PDF', category: 'convert', icon: FileText, keywords: ['word', 'docx', 'doc', '转换'], ready: false, accepts: ['doc', 'docx', 'wps'] },
-  { id: 'excel-to-pdf', name: 'Excel 转 PDF', desc: 'xls、xlsx、et 转为 PDF', category: 'convert', icon: FileSpreadsheet, keywords: ['excel', 'xlsx', '表格'], ready: false, accepts: ['xls', 'xlsx', 'et'] },
-  { id: 'ppt-to-pdf', name: 'PPT 转 PDF', desc: 'ppt、pptx、dps 转为 PDF', category: 'convert', icon: Presentation, keywords: ['ppt', 'pptx', '幻灯片'], ready: false, accepts: ['ppt', 'pptx', 'dps'] },
+  { id: 'pdf-to-word', name: 'PDF 转 Word', desc: '转为可编辑的 Word，保留标题、段落与图片', category: 'convert', icon: FileType2, keywords: ['word', 'docx', '转换'], ready: true, accepts: PDF },
+  { id: 'pdf-to-excel', name: 'PDF 转 Excel', desc: '识别表格的行列，转为可编辑的 Excel', category: 'convert', icon: Sheet, keywords: ['excel', 'xlsx', '表格'], ready: true, accepts: PDF },
+  { id: 'office-convert', name: 'Office 格式转换', desc: 'doc↔docx、xls↔xlsx、ppt↔pptx，WPS 格式转通用格式', category: 'convert', icon: RefreshCcw, keywords: ['doc', 'docx', 'xls', 'wps', 'et', 'dps', '格式', '旧版', '新版'], ready: true, accepts: OFFICE_ALL },
+  { id: 'word-to-pdf', name: 'Word 转 PDF', desc: 'doc、docx、wps 批量转 PDF，版式不变', category: 'convert', icon: FileText, keywords: ['word', 'docx', 'doc', '转换'], ready: true, accepts: ['doc', 'docx', 'docm', 'dot', 'dotx', 'wps', 'wpt', 'rtf', 'odt', 'txt'] },
+  { id: 'excel-to-pdf', name: 'Excel 转 PDF', desc: 'xls、xlsx、et 批量转 PDF，可每表一页', category: 'convert', icon: FileSpreadsheet, keywords: ['excel', 'xlsx', '表格'], ready: true, accepts: ['xls', 'xlsx', 'xlsm', 'xlt', 'xltx', 'et', 'ett', 'csv', 'ods'] },
+  { id: 'ppt-to-pdf', name: 'PPT 转 PDF', desc: 'ppt、pptx、dps 批量转 PDF', category: 'convert', icon: Presentation, keywords: ['ppt', 'pptx', '幻灯片'], ready: true, accepts: ['ppt', 'pptx', 'pptm', 'pps', 'ppsx', 'pot', 'potx', 'dps', 'dpt', 'odp'] },
   { id: 'image-convert', name: '图片格式转换', desc: 'HEIC、WEBP、PNG、JPG、BMP、ICO 等批量互转', category: 'image', icon: Layers, keywords: ['格式', 'webp', 'heic'], ready: true, accepts: IMAGE_EXTS },
   { id: 'image-compress', name: '图片压缩', desc: '按清晰度或指定大小批量压缩，绝不越压越大', category: 'image', icon: ImageDown, keywords: ['压缩', '减小'], ready: true, accepts: IMAGE_EXTS },
   { id: 'image-resize', name: '调整尺寸', desc: '按像素或比例缩放，支持证件照尺寸', category: 'image', icon: Scaling, keywords: ['尺寸', '大小', '缩放'], ready: true, accepts: IMAGE_EXTS },

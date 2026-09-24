@@ -205,6 +205,45 @@ export interface SignJob {
   fileName: string
 }
 
+export type OfficeFamily = 'word' | 'excel' | 'ppt'
+
+export interface OfficeToPdfJob {
+  type: 'office-to-pdf'
+  paths: string[]
+  /** 表格：每个工作表导出为一页 */
+  sheetOnePage: boolean
+  output: BatchOutput
+}
+
+export interface OfficeConvertJob {
+  type: 'office-convert'
+  paths: string[]
+  /** modern：转为 docx/xlsx/pptx；legacy：转为 doc/xls/ppt */
+  mode: 'modern' | 'legacy'
+  output: BatchOutput
+}
+
+export interface OfficeStatus {
+  /** 可用的转换引擎名称，例如 “Microsoft Office”、“WPS Office”、“LibreOffice” */
+  engines: string[]
+}
+
+export interface PdfToWordJob {
+  type: 'pdf-to-word'
+  path: string
+  ranges?: string
+  output: OutputTarget
+}
+
+export interface PdfToExcelJob {
+  type: 'pdf-to-excel'
+  path: string
+  /** 每页一个工作表，或全部放在一个工作表 */
+  layout: 'per-page' | 'single'
+  ranges?: string
+  output: OutputTarget
+}
+
 export type ImageFormat = 'jpg' | 'png' | 'webp' | 'avif' | 'tiff' | 'bmp' | 'ico' | 'gif'
 
 /** 批量任务的输出：dir 为空表示各自保存在源文件所在文件夹 */
@@ -255,6 +294,10 @@ export interface BatchResult {
 }
 
 export type Job =
+  | PdfToWordJob
+  | PdfToExcelJob
+  | OfficeToPdfJob
+  | OfficeConvertJob
   | SignJob
   | PdfEncryptJob
   | PdfDecryptJob
@@ -308,6 +351,8 @@ export interface QingxiangApi {
   pdfMeta(path: string): Promise<PdfMeta>
   imageThumb(path: string, size: number): Promise<ImageThumb | null>
   pdfEncryption(path: string): Promise<'none' | 'open' | 'restricted'>
+  officeStatus(refresh?: boolean): Promise<OfficeStatus>
+  openExternal(url: string): void
   runJob(jobId: string, job: Job): Promise<JobResult>
   cancelJob(jobId: string): void
   onJobProgress(handler: (p: JobProgress) => void): () => void

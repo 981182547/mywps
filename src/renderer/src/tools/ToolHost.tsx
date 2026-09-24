@@ -4,6 +4,7 @@ import { ImagesToPdfTool } from './ImagesToPdfTool'
 import { PdfCompressTool, PdfDecryptTool, PdfEncryptTool, PdfRepairTool } from './SecurityTools'
 import { ImageCompressTool, ImageConvertTool, ImageResizeTool } from './ImageTools'
 import { MergeTool } from './MergeTool'
+import { ExcelToPdfTool, OfficeConvertTool, PdfToExcelTool, PdfToWordTool, PptToPdfTool, WordToPdfTool } from './OfficeTools'
 import { PageNumberTool } from './PageNumberTool'
 import { PageOrganizer } from './PageOrganizer'
 import { WatermarkTool } from './WatermarkTool'
@@ -62,6 +63,18 @@ export function ToolHost({ id, initialFiles, onBack }: Props) {
       return <PdfRepairTool tool={tool} initialFiles={initialFiles} onBack={onBack} />
     case 'pdf-sign':
       return <SignTool tool={tool} initialFiles={initialFiles} onBack={onBack} />
+    case 'word-to-pdf':
+      return <WordToPdfTool tool={tool} initialFiles={initialFiles} onBack={onBack} />
+    case 'excel-to-pdf':
+      return <ExcelToPdfTool tool={tool} initialFiles={initialFiles} onBack={onBack} />
+    case 'ppt-to-pdf':
+      return <PptToPdfTool tool={tool} initialFiles={initialFiles} onBack={onBack} />
+    case 'office-convert':
+      return <OfficeConvertTool tool={tool} initialFiles={initialFiles} onBack={onBack} />
+    case 'pdf-to-word':
+      return <PdfToWordTool tool={tool} initialFiles={initialFiles} onBack={onBack} />
+    case 'pdf-to-excel':
+      return <PdfToExcelTool tool={tool} initialFiles={initialFiles} onBack={onBack} />
     default:
       return null
   }

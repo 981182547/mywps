@@ -33,7 +33,7 @@ export async function openPdfJs(path: string, password?: string): Promise<{ doc:
     throw new UserError(`无法读取文件“${name}”，请确认文件存在且没有被占用`)
   }
   const lib = await pdfjs()
-  const task = lib.getDocument({ data, ...assetDirs(), cMapPacked: true, password, isEvalSupported: false, verbosity: 0 } as Parameters<PdfJs['getDocument']>[0])
+  const task = lib.getDocument({ data, ...assetDirs(), cMapPacked: true, password, isEvalSupported: false, isOffscreenCanvasSupported: false, verbosity: 0 } as Parameters<PdfJs['getDocument']>[0])
   try {
     const doc = await task.promise
     return { doc, close: () => task.destroy() }
