@@ -20,7 +20,7 @@ function normRotation(r: number): number {
   return (((Math.round(r / 90) * 90) % 360) + 360) % 360
 }
 
-async function writeOut(doc: PDFDocument, dir: string, fileName: string): Promise<string> {
+export async function writeOut(doc: PDFDocument, dir: string, fileName: string): Promise<string> {
   await ensureDir(dir)
   const target = uniquePath(dir, sanitizeFileName(fileName, '.pdf'))
   await save(doc, target)
@@ -80,7 +80,7 @@ export function visualPage(page: PDFPage): VisualPage {
 const wrapped = new WeakSet<PDFPage>()
 
 /** 把原有内容包在 q/Q 中，防止原内容遗留的图形状态影响新增内容 */
-function isolateExisting(doc: PDFDocument, page: PDFPage): void {
+export function isolateExisting(doc: PDFDocument, page: PDFPage): void {
   if (wrapped.has(page)) return
   const start = doc.context.register(doc.context.contentStream([pushGraphicsState()]))
   const end = doc.context.register(doc.context.contentStream([popGraphicsState()]))
@@ -89,7 +89,7 @@ function isolateExisting(doc: PDFDocument, page: PDFPage): void {
 }
 
 /** 以中心点 (cx, cy)、逆时针角度 angle 在可见坐标系中绘制图片 */
-function drawCentered(page: PDFPage, vp: VisualPage, image: PDFImage, cx: number, cy: number, w: number, h: number, angle: number, opacity: number) {
+export function drawCentered(page: PDFPage, vp: VisualPage, image: PDFImage, cx: number, cy: number, w: number, h: number, angle: number, opacity: number) {
   const rad = (angle * Math.PI) / 180
   const cos = Math.cos(rad)
   const sin = Math.sin(rad)

@@ -2150,3 +2150,228 @@ select.input {
 .field .input-suffix + .input-suffix {
   margin-top: 0;
 }
+
+/* ============ 弹窗 ============ */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: rgba(15, 23, 42, 0.35);
+  backdrop-filter: blur(6px);
+  display: grid;
+  place-items: center;
+  animation: fade 0.18s ease;
+}
+.modal {
+  width: min(640px, 92vw);
+  max-height: 88vh;
+  overflow-y: auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: var(--shadow-lg);
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  animation: page-in 0.22s ease;
+}
+.modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.modal-head h3 {
+  margin: 0;
+  font-size: 16px;
+}
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.modal-foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.sig-pad-wrap {
+  position: relative;
+}
+.sig-pad {
+  width: 100%;
+  aspect-ratio: 1120 / 400;
+  border-radius: 12px;
+  border: 1.5px dashed var(--border-strong);
+  background: #fff;
+  touch-action: none;
+  cursor: crosshair;
+  display: block;
+}
+.sig-pad-hint {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #9ca3af;
+  pointer-events: none;
+  font-size: 14px;
+}
+.sig-pad-actions {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  display: flex;
+  gap: 4px;
+}
+.sig-pad-actions .btn {
+  background: rgba(255, 255, 255, 0.85);
+  color: #475569;
+}
+.sig-options {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.sig-preview {
+  height: 150px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: #fff;
+  display: grid;
+  place-items: center;
+  color: #9ca3af;
+  overflow: hidden;
+}
+.sig-preview span {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+}
+.sig-preview img {
+  max-width: 90%;
+  max-height: 120px;
+}
+.checker {
+  background: repeating-conic-gradient(#eef0f4 0 25%, #ffffff 0 50%) 50% / 16px 16px;
+}
+
+/* ============ 签名盖章 ============ */
+.sign-page {
+  touch-action: none;
+}
+.placed {
+  position: absolute;
+  cursor: move;
+  border: 1.5px dashed transparent;
+  border-radius: 4px;
+}
+.placed:hover {
+  border-color: color-mix(in srgb, var(--accent) 50%, transparent);
+}
+.placed.selected {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
+}
+.placed img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.resize-handle {
+  position: absolute;
+  right: -7px;
+  bottom: -7px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid var(--accent);
+  cursor: nwse-resize;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.3);
+}
+.seam-slice {
+  position: absolute;
+  right: 0;
+  background-repeat: no-repeat;
+  outline: 1px dashed color-mix(in srgb, var(--accent) 60%, transparent);
+  pointer-events: none;
+}
+.sig-library {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.sig-library.compact {
+  grid-template-columns: repeat(4, 1fr);
+}
+.sig-card {
+  position: relative;
+}
+.sig-card-main {
+  width: 100%;
+  height: 64px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: #fff;
+  display: grid;
+  place-items: center;
+  padding: 6px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.sig-card-main img {
+  max-width: 100%;
+  max-height: 100%;
+}
+.sig-card-main:hover:not(:disabled),
+.sig-card-main.on {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent) inset;
+}
+.sig-library.compact .sig-card-main {
+  height: 48px;
+}
+.sig-card-del {
+  position: absolute;
+  right: -6px;
+  top: -6px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-2);
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.sig-card:hover .sig-card-del {
+  opacity: 1;
+}
+.sig-card-del:hover {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: #fff;
+}
+.sig-card.add {
+  height: 64px;
+  border-radius: 10px;
+  border: 1.5px dashed var(--border-strong);
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  font-size: 12px;
+  color: var(--text-2);
+}
+.sig-card.add:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent-text);
+  background: var(--accent-soft);
+}

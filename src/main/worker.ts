@@ -8,6 +8,7 @@ import { imagesToPdf, mergePdfs, splitPdf, type Progress } from './engine/pdf'
 import { pdfToImages, pdfToPpt, pdfToText } from './engine/render'
 import { compressPdf } from './engine/compress'
 import { decryptPdf, encryptPdf, repairPdf } from './engine/security'
+import { signPdf } from './engine/sign'
 
 export type WorkerMessage =
   | { kind: 'progress'; ratio: number; message: string }
@@ -48,6 +49,8 @@ function run(job: Job, progress: Progress): Promise<string[] | JobResult> {
       return compressPdf(job, progress)
     case 'pdf-repair':
       return repairPdf(job, progress)
+    case 'pdf-sign':
+      return signPdf(job, progress)
   }
 }
 

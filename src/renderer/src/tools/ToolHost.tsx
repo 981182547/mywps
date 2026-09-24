@@ -7,6 +7,7 @@ import { MergeTool } from './MergeTool'
 import { PageNumberTool } from './PageNumberTool'
 import { PageOrganizer } from './PageOrganizer'
 import { WatermarkTool } from './WatermarkTool'
+import { SignTool } from './SignTool'
 import { SplitTool } from './SplitTool'
 import { toolById, type ToolId } from './registry'
 
@@ -59,6 +60,8 @@ export function ToolHost({ id, initialFiles, onBack }: Props) {
       return <PdfCompressTool tool={tool} initialFiles={initialFiles} onBack={onBack} />
     case 'pdf-repair':
       return <PdfRepairTool tool={tool} initialFiles={initialFiles} onBack={onBack} />
+    case 'pdf-sign':
+      return <SignTool tool={tool} initialFiles={initialFiles} onBack={onBack} />
     default:
       return null
   }

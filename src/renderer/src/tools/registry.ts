@@ -117,7 +117,7 @@ export const TOOLS: ToolDef[] = [
   { id: 'image-resize', name: '调整尺寸', desc: '按像素或比例缩放，支持证件照尺寸', category: 'image', icon: Scaling, keywords: ['尺寸', '大小', '缩放'], ready: true, accepts: IMAGE_EXTS },
   { id: 'pdf-encrypt', name: 'PDF 加密', desc: 'AES-256 加密，设置打开密码与打印、复制权限', category: 'security', icon: FileLock2, keywords: ['加密', '密码'], ready: true, accepts: PDF },
   { id: 'pdf-decrypt', name: 'PDF 解密', desc: '移除已知的打开密码，一键解除打印复制限制', category: 'security', icon: KeyRound, keywords: ['解密', '去密码'], ready: true, accepts: PDF },
-  { id: 'pdf-sign', name: '签名与盖章', desc: '手写签名、电子印章与骑缝章', category: 'security', icon: PenLine, keywords: ['签名', '盖章', '印章'], ready: false, accepts: PDF },
+  { id: 'pdf-sign', name: '签名与盖章', desc: '手写签名、印章拖放到页面，支持骑缝章', category: 'security', icon: PenLine, keywords: ['签名', '盖章', '印章'], ready: true, accepts: PDF },
   { id: 'pdf-compress', name: 'PDF 压缩', desc: '三档压缩强度，显示压缩前后大小', category: 'compress', icon: FileArchive, keywords: ['压缩', '瘦身', '减小'], ready: true, accepts: PDF },
   { id: 'pdf-repair', name: 'PDF 修复', desc: '打不开或提示损坏的 PDF，尝试恢复页面', category: 'compress', icon: Wrench, keywords: ['修复', '损坏', '打不开'], ready: true, accepts: PDF },
   { id: 'ocr-image', name: '图片转文字', desc: '识别图片中的中英文', category: 'ocr', icon: ScanText, keywords: ['ocr', '识别', '文字'], ready: false, accepts: IMAGE_EXTS }

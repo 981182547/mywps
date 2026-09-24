@@ -174,6 +174,37 @@ export interface PdfRepairJob {
   fileName: string
 }
 
+/** 签名/印章在页面上的位置：页面可见坐标，原点在左上角，单位磅 */
+export interface SignPlacement {
+  page: number
+  imageId: string
+  x: number
+  y: number
+  w: number
+  h: number
+}
+
+export interface SeamStamp {
+  imageId: string
+  /** 印章完整宽度（磅），会被平分到各页 */
+  width: number
+  /** 印章中心在页面高度上的位置 0~1（从上往下） */
+  yRatio: number
+  /** 参与骑缝的页面，空表示全部 */
+  ranges?: string
+}
+
+export interface SignJob {
+  type: 'pdf-sign'
+  path: string
+  /** 图片 id → PNG 的 base64 */
+  images: Record<string, string>
+  placements: SignPlacement[]
+  seam?: SeamStamp
+  output: OutputTarget
+  fileName: string
+}
+
 export type ImageFormat = 'jpg' | 'png' | 'webp' | 'avif' | 'tiff' | 'bmp' | 'ico' | 'gif'
 
 /** 批量任务的输出：dir 为空表示各自保存在源文件所在文件夹 */
@@ -224,6 +255,7 @@ export interface BatchResult {
 }
 
 export type Job =
+  | SignJob
   | PdfEncryptJob
   | PdfDecryptJob
   | PdfCompressJob
