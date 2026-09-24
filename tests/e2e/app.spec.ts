@@ -169,7 +169,7 @@ test('提取页面', async () => {
 
 test('图片转 PDF：照片方向自动纠正', async () => {
   await page.locator('[data-tool="images-to-pdf"]').first().click()
-  await mockOpenDialog([join(FIX, 'rotated-exif6.jpg'), join(FIX, 'green.png'), join(FIX, 'tiny.webp')])
+  await mockOpenDialog([join(FIX, 'rotated-exif6.jpg'), join(FIX, 'green.png'), join(FIX, 'encrypted.pdf')])
   await page.getByTestId('dropzone').click()
   await expect(page.locator('.image-tile:not(.add)')).toHaveCount(2)
   await expect(page.locator('text=已忽略 1 个不支持的文件')).toBeVisible()
