@@ -236,7 +236,7 @@ export function SplitTool({
       side={side}
       footer={
         job.state.status === 'done' ? null : (
-          <RunFooter state={job.state} label={extractOnly || kind === 'extract' ? '开始提取' : '开始拆分'} disabled={!!reason || running} disabledReason={reason} onRun={run} />
+          <RunFooter state={job.state} onCancel={job.cancel} label={extractOnly || kind === 'extract' ? '开始提取' : '开始拆分'} disabled={!!reason || running} disabledReason={reason} onRun={run} />
         )
       }
     />

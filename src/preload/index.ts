@@ -9,6 +9,7 @@ const api: QingxiangApi = {
   readFile: (path) => ipcRenderer.invoke('file:read', path),
   pdfMeta: (path) => ipcRenderer.invoke('pdf:meta', path),
   runJob: (jobId, job) => ipcRenderer.invoke('job:run', jobId, job),
+  cancelJob: (jobId) => ipcRenderer.send('job:cancel', jobId),
   onJobProgress: (handler) => {
     const listener = (_e: unknown, p: JobProgress) => handler(p)
     ipcRenderer.on('job:progress', listener)

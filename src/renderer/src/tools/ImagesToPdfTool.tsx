@@ -205,7 +205,7 @@ export function ImagesToPdfTool({ tool, initialFiles, onBack }: { tool: ToolDef;
       onBack={onBack}
       files={filesPanel}
       side={side}
-      footer={job.state.status === 'done' ? null : <RunFooter state={job.state} label="生成 PDF" disabled={!!reason || running} disabledReason={reason} onRun={run} />}
+      footer={job.state.status === 'done' ? null : <RunFooter state={job.state} onCancel={job.cancel} label="生成 PDF" disabled={!!reason || running} disabledReason={reason} onRun={run} />}
     />
   )
 }

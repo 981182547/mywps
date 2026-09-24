@@ -9,6 +9,8 @@ import type { WorkerMessage } from './worker'
 
 const isMac = process.platform === 'darwin'
 let mainWindow: BrowserWindow | null = null
+/** 正在运行的任务，用于取消 */
+const runningJobs = new Map<string, { cancel: () => void }>()
 
 function createWindow(): void {
   mainWindow = new BrowserWindow({
@@ -79,6 +81,15 @@ function registerIpc(): void {
     return new Promise<{ outputs: string[] }>((resolve, reject) => {
       const worker = createJobWorker({ workerData: job })
       let settled = false
+      runningJobs.set(jobId, {
+        cancel: () => {
+          if (settled) return
+          settled = true
+          worker.terminate()
+          reject(new Error('已取消'))
+        }
+      })
+      worker.on('exit', () => runningJobs.delete(jobId))
       worker.on('message', (m: WorkerMessage) => {
         if (m.kind === 'progress') {
           const p: JobProgress = { jobId, ratio: m.ratio, message: m.message }
@@ -102,6 +113,8 @@ function registerIpc(): void {
       })
     })
   })
+
+  ipcMain.on('job:cancel', (_e, jobId: string) => runningJobs.get(jobId)?.cancel())
 
   ipcMain.handle('shell:open-path', async (_e, path: string) => {
     const err = await shell.openPath(path)

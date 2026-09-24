@@ -1,4 +1,5 @@
 import type { FileInfo } from '../../../shared/types'
+import { PdfToImagesTool, PdfToPptTool, PdfToTextTool } from './ConvertTools'
 import { ImagesToPdfTool } from './ImagesToPdfTool'
 import { MergeTool } from './MergeTool'
 import { PageNumberTool } from './PageNumberTool'
@@ -34,6 +35,14 @@ export function ToolHost({ id, initialFiles, onBack }: Props) {
       return <WatermarkTool tool={tool} initialFiles={initialFiles} onBack={onBack} />
     case 'pdf-page-numbers':
       return <PageNumberTool tool={tool} initialFiles={initialFiles} onBack={onBack} />
+    case 'pdf-to-images':
+      return <PdfToImagesTool tool={tool} initialFiles={initialFiles} onBack={onBack} initialMode="pages" />
+    case 'pdf-to-long-image':
+      return <PdfToImagesTool tool={tool} initialFiles={initialFiles} onBack={onBack} initialMode="long" />
+    case 'pdf-to-txt':
+      return <PdfToTextTool tool={tool} initialFiles={initialFiles} onBack={onBack} />
+    case 'pdf-to-ppt':
+      return <PdfToPptTool tool={tool} initialFiles={initialFiles} onBack={onBack} />
     default:
       return null
   }

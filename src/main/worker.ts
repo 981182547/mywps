@@ -4,6 +4,7 @@ import type { Job } from '../shared/types'
 import { imagesToPdf, mergePdfs, splitPdf, type Progress } from './engine/pdf'
 import { UserError } from '../shared/ranges'
 import { addPageNumbers, addWatermark, editPages } from './engine/pages'
+import { pdfToImages, pdfToPpt, pdfToText } from './engine/render'
 
 export type WorkerMessage =
   | { kind: 'progress'; ratio: number; message: string }
@@ -24,6 +25,12 @@ function run(job: Job, progress: Progress): Promise<string[]> {
       return addWatermark(job, progress)
     case 'pdf-page-numbers':
       return addPageNumbers(job, progress)
+    case 'pdf-to-images':
+      return pdfToImages(job, progress)
+    case 'pdf-to-txt':
+      return pdfToText(job, progress)
+    case 'pdf-to-ppt':
+      return pdfToPpt(job, progress)
   }
 }
 

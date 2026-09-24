@@ -1075,6 +1075,7 @@ button {
   align-items: flex-start;
 }
 .single-file .big-thumb {
+  position: relative;
   width: 170px;
   aspect-ratio: 1 / 1.414;
   border-radius: 10px;
@@ -2012,4 +2013,14 @@ select.input {
   background: var(--accent-soft);
   border-color: var(--accent);
   color: var(--accent-text);
+}
+
+/* 处理中：锁定文件区与设置区，避免中途修改 */
+.tool-body:has([data-action='cancel']) .side-scroll,
+.tool-body:has([data-action='cancel']) .files-panel {
+  pointer-events: none;
+}
+.tool-body:has([data-action='cancel']) .side-scroll {
+  opacity: 0.55;
+  transition: opacity 0.2s;
 }

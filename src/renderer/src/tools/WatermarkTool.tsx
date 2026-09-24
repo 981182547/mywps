@@ -262,7 +262,7 @@ export function WatermarkTool({ tool, initialFiles, onBack }: { tool: ToolDef; i
       onBack={onBack}
       files={filesPanel}
       side={side}
-      footer={job.state.status === 'done' ? null : <RunFooter state={job.state} label="添加水印" disabled={!!reason || running} disabledReason={reason} onRun={run} />}
+      footer={job.state.status === 'done' ? null : <RunFooter state={job.state} onCancel={job.cancel} label="添加水印" disabled={!!reason || running} disabledReason={reason} onRun={run} />}
     />
   )
 }

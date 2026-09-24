@@ -57,16 +57,20 @@ function cleanError(e: unknown): string {
 
 export function useJob() {
   const [state, setState] = useState<JobState>({ status: 'idle' })
+  const current = useRef<string | null>(null)
   const alive = useRef(true)
   useEffect(() => {
     alive.current = true
     return () => {
       alive.current = false
+      // 离开页面时取消仍在运行的任务
+      if (current.current) window.qx.cancelJob(current.current)
     }
   }, [])
 
   const run = useCallback(async (job: Job) => {
     const id = uid('job')
+    current.current = id
     setState({ status: 'running', ratio: 0, message: '准备中…' })
     const off = window.qx.onJobProgress((p) => {
       if (p.jobId === id && alive.current) setState({ status: 'running', ratio: p.ratio, message: p.message })
@@ -75,14 +79,19 @@ export function useJob() {
       const r = await window.qx.runJob(id, job)
       if (alive.current) setState({ status: 'done', outputs: r.outputs })
     } catch (e) {
-      if (alive.current) setState({ status: 'error', message: cleanError(e) })
+      const message = cleanError(e)
+      if (alive.current) setState(message === '已取消' ? { status: 'idle' } : { status: 'error', message })
     } finally {
       off()
+      if (current.current === id) current.current = null
     }
   }, [])
 
+  const cancel = useCallback(() => {
+    if (current.current) window.qx.cancelJob(current.current)
+  }, [])
   const reset = useCallback(() => setState({ status: 'idle' }), [])
-  return { state, run, reset }
+  return { state, run, reset, cancel }
 }
 
 const OUT_KEY = 'qx.outputDir'

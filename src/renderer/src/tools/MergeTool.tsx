@@ -221,7 +221,7 @@ export function MergeTool({ tool, initialFiles, onBack }: { tool: ToolDef; initi
       onBack={onBack}
       files={filesPanel}
       side={side}
-      footer={job.state.status === 'done' ? null : <RunFooter state={job.state} label="开始合并" disabled={!!reason || running} disabledReason={reason} onRun={run} />}
+      footer={job.state.status === 'done' ? null : <RunFooter state={job.state} onCancel={job.cancel} label="开始合并" disabled={!!reason || running} disabledReason={reason} onRun={run} />}
     />
   )
 }

@@ -110,13 +110,15 @@ export function RunFooter({
   label,
   disabled,
   disabledReason,
-  onRun
+  onRun,
+  onCancel
 }: {
   state: JobState
   label: string
   disabled: boolean
   disabledReason?: string
   onRun: () => void
+  onCancel?: () => void
 }) {
   if (state.status === 'running') {
     const pct = Math.round(state.ratio * 100)
@@ -129,6 +131,11 @@ export function RunFooter({
         <div className="progress" role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100}>
           <div style={{ width: `${Math.max(4, pct)}%` }} />
         </div>
+        {onCancel && (
+          <button className="btn ghost sm" style={{ alignSelf: 'center' }} onClick={onCancel} data-action="cancel">
+            取消
+          </button>
+        )}
       </>
     )
   }

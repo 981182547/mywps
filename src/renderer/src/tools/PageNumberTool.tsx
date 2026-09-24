@@ -209,7 +209,7 @@ export function PageNumberTool({ tool, initialFiles, onBack }: { tool: ToolDef; 
       onBack={onBack}
       files={filesPanel}
       side={side}
-      footer={job.state.status === 'done' ? null : <RunFooter state={job.state} label="添加页码" disabled={!!reason || running} disabledReason={reason} onRun={run} />}
+      footer={job.state.status === 'done' ? null : <RunFooter state={job.state} onCancel={job.cancel} label="添加页码" disabled={!!reason || running} disabledReason={reason} onRun={run} />}
     />
   )
 }

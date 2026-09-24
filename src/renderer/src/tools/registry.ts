@@ -10,6 +10,7 @@ import {
   FileSpreadsheet,
   FileText,
   FileType2,
+  GalleryVertical,
   Hash,
   ImageDown,
   ImagePlus,
@@ -17,6 +18,7 @@ import {
   KeyRound,
   Layers,
   ListOrdered,
+  MonitorPlay,
   PenLine,
   Presentation,
   RotateCw,
@@ -24,7 +26,8 @@ import {
   Scaling,
   Scissors,
   ShieldCheck,
-  Trash2
+  Trash2,
+  Type
 } from 'lucide-react'
 
 export type CategoryId = 'pdf' | 'convert' | 'image' | 'security' | 'compress' | 'ocr'
@@ -58,6 +61,9 @@ export type ToolId =
   | 'pdf-watermark'
   | 'pdf-page-numbers'
   | 'pdf-to-images'
+  | 'pdf-to-long-image'
+  | 'pdf-to-txt'
+  | 'pdf-to-ppt'
   | 'pdf-to-word'
   | 'word-to-pdf'
   | 'excel-to-pdf'
@@ -96,7 +102,10 @@ export const TOOLS: ToolDef[] = [
   { id: 'pdf-reorder', name: '页面排序', desc: '拖动缩略图调整页面顺序，一键倒序', category: 'pdf', icon: ListOrdered, keywords: ['排序', '顺序', 'reorder'], ready: true, accepts: PDF },
   { id: 'pdf-watermark', name: '添加水印', desc: '文字或图片水印，可调透明度与角度', category: 'pdf', icon: Droplets, keywords: ['水印', 'watermark'], ready: true, accepts: PDF },
   { id: 'pdf-page-numbers', name: '添加页码', desc: '六种位置、多种格式，可跳过封面', category: 'pdf', icon: Hash, keywords: ['页码', 'page number'], ready: true, accepts: PDF },
-  { id: 'pdf-to-images', name: 'PDF 转图片', desc: '每页导出为高清 JPG 或 PNG', category: 'convert', icon: FileImage, keywords: ['图片', 'jpg', 'png', '转换'], ready: false, accepts: PDF },
+  { id: 'pdf-to-images', name: 'PDF 转图片', desc: '每页导出为高清 JPG 或 PNG', category: 'convert', icon: FileImage, keywords: ['图片', 'jpg', 'png', '转换'], ready: true, accepts: PDF },
+  { id: 'pdf-to-long-image', name: 'PDF 转长图', desc: '所有页面拼成一张长图，方便手机查看', category: 'convert', icon: GalleryVertical, keywords: ['长图', '图片', '手机'], ready: true, accepts: PDF },
+  { id: 'pdf-to-txt', name: 'PDF 转文字', desc: '提取文字保存为 TXT，支持中文排版', category: 'convert', icon: Type, keywords: ['文字', 'txt', '文本', '提取'], ready: true, accepts: PDF },
+  { id: 'pdf-to-ppt', name: 'PDF 转 PPT', desc: '每页生成一张幻灯片，版面不变', category: 'convert', icon: MonitorPlay, keywords: ['ppt', 'pptx', '幻灯片', '演示'], ready: true, accepts: PDF },
   { id: 'pdf-to-word', name: 'PDF 转 Word', desc: '转换为可编辑的 Word 文档', category: 'convert', icon: FileType2, keywords: ['word', 'docx', '转换'], ready: false, accepts: PDF },
   { id: 'word-to-pdf', name: 'Word 转 PDF', desc: 'doc、docx、wps 转为 PDF', category: 'convert', icon: FileText, keywords: ['word', 'docx', 'doc', '转换'], ready: false, accepts: ['doc', 'docx', 'wps'] },
   { id: 'excel-to-pdf', name: 'Excel 转 PDF', desc: 'xls、xlsx、et 转为 PDF', category: 'convert', icon: FileSpreadsheet, keywords: ['excel', 'xlsx', '表格'], ready: false, accepts: ['xls', 'xlsx', 'et'] },

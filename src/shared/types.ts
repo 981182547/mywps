@@ -103,7 +103,47 @@ export interface PageNumberJob {
   fileName: string
 }
 
-export type Job = MergeJob | SplitJob | ImagesToPdfJob | PageEditJob | WatermarkJob | PageNumberJob
+export interface PdfToImagesJob {
+  type: 'pdf-to-images'
+  path: string
+  /** pages：每页一张；long：拼成长图 */
+  mode: 'pages' | 'long'
+  format: 'jpg' | 'png'
+  dpi: number
+  /** JPG 质量 1~100 */
+  quality: number
+  /** 长图中页面之间留缝 */
+  gap: boolean
+  ranges?: string
+  output: OutputTarget
+}
+
+export interface PdfToTextJob {
+  type: 'pdf-to-txt'
+  path: string
+  pageMarkers: boolean
+  ranges?: string
+  output: OutputTarget
+}
+
+export interface PdfToPptJob {
+  type: 'pdf-to-ppt'
+  path: string
+  dpi: number
+  ranges?: string
+  output: OutputTarget
+}
+
+export type Job =
+  | MergeJob
+  | SplitJob
+  | ImagesToPdfJob
+  | PageEditJob
+  | WatermarkJob
+  | PageNumberJob
+  | PdfToImagesJob
+  | PdfToTextJob
+  | PdfToPptJob
 
 export interface JobProgress {
   jobId: string
@@ -129,6 +169,7 @@ export interface QingxiangApi {
   readFile(path: string): Promise<Uint8Array>
   pdfMeta(path: string): Promise<PdfMeta>
   runJob(jobId: string, job: Job): Promise<JobResult>
+  cancelJob(jobId: string): void
   onJobProgress(handler: (p: JobProgress) => void): () => void
   openPath(path: string): Promise<void>
   showInFolder(path: string): void
