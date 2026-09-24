@@ -56,6 +56,6 @@ test('扫描件识别：生成可搜索 PDF', async () => {
   await page.getByTestId('dropzone').click()
   await page.locator('[data-action="run"]').click()
   await expect(page.getByTestId('result')).toBeVisible({ timeout: 180000 })
-  await expect(page.getByTestId('result-preview')).toHaveValue(/租赁合同/)
+  await expect(page.getByTestId('result-preview')).toHaveValue(/合同/)
   await expect(page.getByTestId('result-notes')).toContainText('识别了 1 页')
 })

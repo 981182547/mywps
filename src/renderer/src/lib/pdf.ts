@@ -4,6 +4,13 @@ import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
 
 pdfjs.GlobalWorkerOptions.workerSrc = workerUrl
 
+// 未嵌入字体的 PDF（包括中文）需要这些资源才能正确显示
+const ASSETS = {
+  standardFontDataUrl: new URL('./pdfjs/standard_fonts/', document.baseURI).href,
+  cMapUrl: new URL('./pdfjs/cmaps/', document.baseURI).href,
+  cMapPacked: true
+}
+
 export interface PdfPreview {
   pageCount: number
   /** 第一页缩略图（data URL）；加密文件为空 */
@@ -53,7 +60,7 @@ export function previewPdf(path: string, targetWidth = 120): Promise<PdfPreview>
       let task: pdfjs.PDFDocumentLoadingTask | null = null
       try {
         const data = await window.qx.readFile(path)
-        task = pdfjs.getDocument({ data })
+        task = pdfjs.getDocument({ data, ...ASSETS })
         const doc = await task.promise
         const thumb = await renderFirstPage(doc, targetWidth)
         return { pageCount: doc.numPages, thumb, encrypted: false }
@@ -91,7 +98,7 @@ export async function openPdf(path: string): Promise<OpenResult> {
   let task: pdfjs.PDFDocumentLoadingTask | null = null
   try {
     const data = await window.qx.readFile(path)
-    task = pdfjs.getDocument({ data })
+    task = pdfjs.getDocument({ data, ...ASSETS })
     const doc = await task.promise
     const t = task
     const cache = new Map<string, Promise<string>>()
