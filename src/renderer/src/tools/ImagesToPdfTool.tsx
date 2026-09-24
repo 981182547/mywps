@@ -125,7 +125,7 @@ export function ImagesToPdfTool({ tool, initialFiles, onBack }: { tool: ToolDef;
 
   const side =
     job.state.status === 'done' ? (
-      <ResultView outputs={job.state.outputs} notes={job.state.notes} failures={job.state.failures} onReset={() => { job.reset(); setItems([]); setNameTouched(false) }} />
+      <ResultView outputs={job.state.outputs} notes={job.state.notes} failures={job.state.failures} preview={job.state.preview} onReset={() => { job.reset(); setItems([]); setNameTouched(false) }} />
     ) : (
       <>
         <Field label="页面大小">

@@ -1,5 +1,5 @@
-import { AlertCircle, ArrowLeft, CheckCircle2, ExternalLink, FileText, FolderOpen, RotateCcw } from 'lucide-react'
-import type { ReactNode } from 'react'
+import { AlertCircle, ArrowLeft, Check, CheckCircle2, Copy, ExternalLink, FileText, FolderOpen, RotateCcw } from 'lucide-react'
+import { useState, type ReactNode } from 'react'
 import { baseName, dirOf } from '../lib/format'
 import type { JobState } from '../lib/hooks'
 import { categoryById, type ToolDef } from './registry'
@@ -155,8 +155,40 @@ export function RunFooter({
   )
 }
 
+function TextPreview({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false)
+  return (
+    <div className="text-preview">
+      <textarea readOnly value={text} aria-label="识别结果" data-testid="result-preview" />
+      <button
+        className="btn sm"
+        onClick={() => {
+          navigator.clipboard.writeText(text).then(() => {
+            setCopied(true)
+            setTimeout(() => setCopied(false), 1500)
+          })
+        }}
+      >
+        {copied ? <Check size={14} /> : <Copy size={14} />} {copied ? '已复制' : '复制全部文字'}
+      </button>
+    </div>
+  )
+}
+
 /** 处理完成后的结果视图 */
-export function ResultView({ outputs, notes = [], failures = [], onReset }: { outputs: string[]; notes?: string[]; failures?: string[]; onReset: () => void }) {
+export function ResultView({
+  outputs,
+  notes = [],
+  failures = [],
+  preview,
+  onReset
+}: {
+  outputs: string[]
+  notes?: string[]
+  failures?: string[]
+  preview?: string
+  onReset: () => void
+}) {
   const single = outputs.length === 1
   return (
     <div className="result" data-testid="result">
@@ -185,6 +217,7 @@ export function ResultView({ outputs, notes = [], failures = [], onReset }: { ou
           ))}
         </div>
       )}
+      {preview !== undefined && preview.trim() !== '' && <TextPreview text={preview} />}
       <div className="result-files">
         {outputs.map((p) => (
           <button key={p} className="result-file" onClick={() => window.qx.openPath(p)} title={p}>

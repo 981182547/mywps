@@ -104,7 +104,7 @@ export function SinglePdfTool({
 
   const side =
     job.state.status === 'done' ? (
-      <ResultView outputs={job.state.outputs} notes={job.state.notes} failures={job.state.failures} onReset={() => { job.reset(); pdf.clear() }} />
+      <ResultView outputs={job.state.outputs} notes={job.state.notes} failures={job.state.failures} preview={job.state.preview} onReset={() => { job.reset(); pdf.clear() }} />
     ) : (
       <>
         {options(c)}

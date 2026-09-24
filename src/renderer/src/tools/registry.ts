@@ -7,6 +7,7 @@ import {
   FileImage,
   FileLock2,
   FileOutput,
+  FileSearch,
   FileSpreadsheet,
   FileText,
   FileType2,
@@ -82,6 +83,7 @@ export type ToolId =
   | 'pdf-compress'
   | 'pdf-repair'
   | 'ocr-image'
+  | 'ocr-pdf'
 
 export interface ToolDef {
   id: ToolId
@@ -127,7 +129,8 @@ export const TOOLS: ToolDef[] = [
   { id: 'pdf-sign', name: '签名与盖章', desc: '手写签名、印章拖放到页面，支持骑缝章', category: 'security', icon: PenLine, keywords: ['签名', '盖章', '印章'], ready: true, accepts: PDF },
   { id: 'pdf-compress', name: 'PDF 压缩', desc: '三档压缩强度，显示压缩前后大小', category: 'compress', icon: FileArchive, keywords: ['压缩', '瘦身', '减小'], ready: true, accepts: PDF },
   { id: 'pdf-repair', name: 'PDF 修复', desc: '打不开或提示损坏的 PDF，尝试恢复页面', category: 'compress', icon: Wrench, keywords: ['修复', '损坏', '打不开'], ready: true, accepts: PDF },
-  { id: 'ocr-image', name: '图片转文字', desc: '识别图片中的中英文', category: 'ocr', icon: ScanText, keywords: ['ocr', '识别', '文字'], ready: false, accepts: IMAGE_EXTS }
+  { id: 'ocr-pdf', name: '扫描件识别', desc: '扫描版 PDF 转为可搜索、可复制的 PDF 或 Word', category: 'ocr', icon: FileSearch, keywords: ['ocr', '扫描', '识别', '可搜索', '复制'], ready: true, accepts: PDF },
+  { id: 'ocr-image', name: '图片转文字', desc: '识别截图、照片中的中英文，一键复制', category: 'ocr', icon: ScanText, keywords: ['ocr', '识别', '文字'], ready: true, accepts: IMAGE_EXTS }
 ]
 
 export function toolById(id: ToolId): ToolDef {

@@ -297,7 +297,7 @@ export function SignTool({ tool, initialFiles, onBack }: { tool: ToolDef; initia
 
   const side =
     job.state.status === 'done' ? (
-      <ResultView outputs={job.state.outputs} notes={job.state.notes} failures={job.state.failures} onReset={() => { job.reset(); pdf.clear() }} />
+      <ResultView outputs={job.state.outputs} notes={job.state.notes} failures={job.state.failures} preview={job.state.preview} onReset={() => { job.reset(); pdf.clear() }} />
     ) : (
       <>
         <Field label="我的签名和印章" hint={library.length ? '点击放到当前页，拖动调整位置，拖动右下角调整大小' : undefined}>

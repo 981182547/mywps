@@ -11,6 +11,7 @@ import { decryptPdf, encryptPdf, repairPdf } from './engine/security'
 import { signPdf } from './engine/sign'
 import { officeConvert, officeToPdf } from './engine/office'
 import { pdfToExcel, pdfToWord } from './engine/pdf2office'
+import { ocrImages, ocrPdf } from './engine/ocr'
 import { onChildProcess } from './engine/child'
 
 export type WorkerMessage =
@@ -63,6 +64,10 @@ function run(job: Job, progress: Progress): Promise<string[] | JobResult> {
       return pdfToWord(job, progress)
     case 'pdf-to-excel':
       return pdfToExcel(job, progress)
+    case 'ocr-images':
+      return ocrImages(job, progress)
+    case 'ocr-pdf':
+      return ocrPdf(job, progress)
   }
 }
 

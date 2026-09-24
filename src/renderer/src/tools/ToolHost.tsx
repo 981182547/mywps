@@ -4,6 +4,7 @@ import { ImagesToPdfTool } from './ImagesToPdfTool'
 import { PdfCompressTool, PdfDecryptTool, PdfEncryptTool, PdfRepairTool } from './SecurityTools'
 import { ImageCompressTool, ImageConvertTool, ImageResizeTool } from './ImageTools'
 import { MergeTool } from './MergeTool'
+import { OcrImageTool, OcrPdfTool } from './OcrTools'
 import { ExcelToPdfTool, OfficeConvertTool, PdfToExcelTool, PdfToWordTool, PptToPdfTool, WordToPdfTool } from './OfficeTools'
 import { PageNumberTool } from './PageNumberTool'
 import { PageOrganizer } from './PageOrganizer'
@@ -75,6 +76,10 @@ export function ToolHost({ id, initialFiles, onBack }: Props) {
       return <PdfToWordTool tool={tool} initialFiles={initialFiles} onBack={onBack} />
     case 'pdf-to-excel':
       return <PdfToExcelTool tool={tool} initialFiles={initialFiles} onBack={onBack} />
+    case 'ocr-image':
+      return <OcrImageTool tool={tool} initialFiles={initialFiles} onBack={onBack} />
+    case 'ocr-pdf':
+      return <OcrPdfTool tool={tool} initialFiles={initialFiles} onBack={onBack} />
     default:
       return null
   }

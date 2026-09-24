@@ -128,7 +128,7 @@ export function PageNumberTool({ tool, initialFiles, onBack }: { tool: ToolDef; 
 
   const side =
     job.state.status === 'done' ? (
-      <ResultView outputs={job.state.outputs} notes={job.state.notes} failures={job.state.failures} onReset={() => { job.reset(); pdf.clear(); setNameTouched(false) }} />
+      <ResultView outputs={job.state.outputs} notes={job.state.notes} failures={job.state.failures} preview={job.state.preview} onReset={() => { job.reset(); pdf.clear(); setNameTouched(false) }} />
     ) : (
       <>
         <Field label="位置">

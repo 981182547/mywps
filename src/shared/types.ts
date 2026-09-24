@@ -244,6 +244,27 @@ export interface PdfToExcelJob {
   output: OutputTarget
 }
 
+export type OcrLang = 'chi' | 'eng'
+
+export interface OcrImagesJob {
+  type: 'ocr-images'
+  paths: string[]
+  lang: OcrLang
+  /** each：每张图片一个 TXT；merged：合并为一个 TXT；docx：合并为一个 Word */
+  format: 'each' | 'merged' | 'docx'
+  output: BatchOutput
+}
+
+export interface OcrPdfJob {
+  type: 'ocr-pdf'
+  path: string
+  lang: OcrLang
+  /** searchable：生成可搜索、可复制的 PDF；txt / docx：导出文字 */
+  format: 'searchable' | 'txt' | 'docx'
+  ranges?: string
+  output: OutputTarget
+}
+
 export type ImageFormat = 'jpg' | 'png' | 'webp' | 'avif' | 'tiff' | 'bmp' | 'ico' | 'gif'
 
 /** 批量任务的输出：dir 为空表示各自保存在源文件所在文件夹 */
@@ -287,6 +308,8 @@ export interface ImageResizeJob {
 
 export interface BatchResult {
   outputs: string[]
+  /** 可在结果页直接查看、复制的文字（如识别结果） */
+  preview?: string
   /** 每个文件的说明，例如压缩前后大小 */
   notes: string[]
   /** 失败的文件及原因 */
@@ -294,6 +317,8 @@ export interface BatchResult {
 }
 
 export type Job =
+  | OcrImagesJob
+  | OcrPdfJob
   | PdfToWordJob
   | PdfToExcelJob
   | OfficeToPdfJob
@@ -325,6 +350,7 @@ export interface JobProgress {
 
 export interface JobResult {
   outputs: string[]
+  preview?: string
   notes?: string[]
   failures?: string[]
 }
