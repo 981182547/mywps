@@ -4,6 +4,7 @@ import { Sidebar } from './components/Sidebar'
 import { TitleBar } from './components/TitleBar'
 import { CategoryPage } from './pages/CategoryPage'
 import { Home } from './pages/Home'
+import { pushRecent } from './lib/recent'
 import { ToolHost } from './tools/ToolHost'
 import type { CategoryId, ToolId } from './tools/registry'
 
@@ -19,6 +20,7 @@ export function App() {
 
   const openTool = useCallback(
     (id: ToolId, files?: FileInfo[]) => {
+      pushRecent(id)
       setToolKey((k) => k + 1)
       setRoute((r) => ({ view: 'tool', id, files, from: r.view === 'category' ? r.id : r.view === 'tool' ? r.from : 'home' }))
     },

@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import type { FileInfo } from '../../../shared/types'
 import { ToolCard } from '../components/ToolCard'
 import { useFileDrop } from '../lib/hooks'
+import { loadRecent } from '../lib/recent'
 import { CATEGORIES, TOOLS, categoryById, searchTools, suggestTools, type ToolId } from '../tools/registry'
 
 interface Props {
@@ -39,6 +40,8 @@ export function Home({ onOpenTool, incoming, onIncomingHandled }: Props) {
   }, [incoming])
 
   const results = useMemo(() => searchTools(query), [query])
+  // 最近使用过的工具（排除已在“常用工具”中的）
+  const recent = useMemo(() => loadRecent().filter((id) => !FEATURED.includes(id) && TOOLS.some((t) => t.id === id && t.ready)), [])
 
   const pickAny = async () => {
     const files = await window.qx.pickFiles([{ name: '所有文件', extensions: ['*'] }], true)
@@ -101,6 +104,18 @@ export function Home({ onOpenTool, incoming, onIncomingHandled }: Props) {
         </section>
       ) : (
         <>
+          {recent.length > 0 && (
+            <section className="section" data-testid="recent-tools">
+              <div className="section-head">
+                <h3>最近使用</h3>
+              </div>
+              <div className="tool-grid featured-grid">
+                {recent.map((id) => (
+                  <ToolCard key={id} tool={TOOLS.find((x) => x.id === id)!} onOpen={() => onOpenTool(id)} />
+                ))}
+              </div>
+            </section>
+          )}
           <section className="section">
             <div className="section-head">
               <h3>常用工具</h3>

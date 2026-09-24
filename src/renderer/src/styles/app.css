@@ -1881,7 +1881,8 @@ button {
   display: grid;
   place-items: center;
   color: #fff;
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12);
+  /* 深色主题下深色色块也要看得见 */
+  box-shadow: inset 0 0 0 1px var(--border-strong);
   transition: transform 0.12s;
   cursor: pointer;
   position: relative;

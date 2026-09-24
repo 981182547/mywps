@@ -1,0 +1,21 @@
+# 源代码统一使用 LF 换行
+* text=auto eol=lf
+
+# 二进制文件：禁止换行转换（Windows 上 Git 可能把不含 NUL 字节的小 PDF 当成文本而破坏它）
+*.pdf binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.bmp binary
+*.tif binary
+*.tiff binary
+*.webp binary
+*.heic binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.docx binary
+*.xlsx binary
+*.pptx binary
+*.zip binary

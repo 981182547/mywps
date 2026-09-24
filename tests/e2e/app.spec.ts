@@ -193,6 +193,15 @@ test('图片转 PDF：照片方向自动纠正', async () => {
   expect(basename(out)).toBe('我的照片.pdf')
 })
 
+test('首页显示最近使用的工具', async () => {
+  await page.locator('[data-tool="pdf-extract"]').first().click()
+  await page.locator('button[aria-label="返回"]').click()
+  // 提取页面在“常用工具”中，不重复显示；拆分同理。这里再打开一个非常用工具
+  await page.locator('[data-tool="pdf-watermark"]').first().click()
+  await page.locator('button[aria-label="返回"]').click()
+  await expect(page.getByTestId('recent-tools').locator('[data-tool="pdf-watermark"]')).toBeVisible()
+})
+
 test('拖入文件推荐工具', async () => {
   const a = await makePdf('推荐.pdf', 1, [0.3, 0.3, 0.3])
   await mockOpenDialog([a])
