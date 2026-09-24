@@ -28,7 +28,7 @@ describe('PDF 转图片', () => {
   it('每页一张，按 DPI 计算像素尺寸，多张放入文件夹', async () => {
     const src = await makePdf(dir, '文档.pdf', 3, 143, 0, 72) // 144x72 磅 = 2x1 英寸
     const out = await pdfToImages({ type: 'pdf-to-images', path: src, mode: 'pages', format: 'png', dpi: 150, quality: 90, gap: false, output: { dir } })
-    expect(out.map((p) => p.split('/').slice(-2).join('/'))).toEqual(['文档_图片/文档_01.png', '文档_图片/文档_02.png', '文档_图片/文档_03.png'])
+    expect(out.map((p) => p.split(/[\\/]/).slice(-2).join('/'))).toEqual(['文档_图片/文档_01.png', '文档_图片/文档_02.png', '文档_图片/文档_03.png'])
     expect(imageSize(await readFile(out[0]))).toEqual([300, 150])
   })
 

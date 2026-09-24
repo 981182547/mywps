@@ -12,22 +12,30 @@
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "vitest run",
     "test:e2e": "npm run build && playwright test",
-    "check": "npm run typecheck && npm test && npm run test:e2e"
+    "check": "npm run typecheck && npm test && npm run test:e2e",
+    "dist:win": "npm run build && node scripts/win-natives.mjs && electron-builder --win",
+    "dist:mac": "npm run build && electron-builder --mac",
+    "dist:linux": "npm run build && electron-builder --linux",
+    "pack": "npm run build && electron-builder --dir"
   },
   "devDependencies": {
+    "@fontsource-variable/inter": "^5.3.0",
     "@playwright/test": "^1.63.0",
     "@types/node": "^22.20.4",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^5.2.0",
     "electron": "^44.4.5",
+    "electron-builder": "^26.15.3",
     "electron-vite": "^5.0.0",
+    "lucide-react": "^1.48.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
     "typescript": "^5.9.3",
     "vite": "^7.3.6",
     "vitest": "^5.0.1"
   },
   "dependencies": {
-    "@fontsource-variable/inter": "^5.3.0",
     "@napi-rs/canvas": "^1.0.9",
     "@neslinesli93/qpdf-wasm": "^0.3.0",
     "@tesseract.js-data/chi_sim": "^1.0.0",
@@ -35,13 +43,12 @@
     "docx": "^9.7.2",
     "exceljs": "^4.4.0",
     "heic-decode": "^2.1.0",
-    "lucide-react": "^1.48.0",
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^6.3.289",
     "pptxgenjs": "^4.0.1",
-    "react": "^19.3.0",
-    "react-dom": "^19.3.0",
     "sharp": "^0.35.4",
     "tesseract.js": "^7.0.0"
-  }
+  },
+  "author": "轻匣",
+  "homepage": "https://github.com/981182547/mywps"
 }

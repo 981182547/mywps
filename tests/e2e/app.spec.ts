@@ -4,6 +4,7 @@ import { tmpdir } from 'node:os'
 import { basename, join } from 'node:path'
 import { _electron as electron, expect, test, type ElectronApplication, type Page } from '@playwright/test'
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib'
+import { launchOptions } from './helpers'
 
 const ROOT = join(__dirname, '../..')
 const FIX = join(ROOT, 'tests/fixtures')
@@ -45,10 +46,7 @@ async function shot(name: string): Promise<void> {
 
 test.beforeAll(async () => {
   dir = await mkdtemp(join(tmpdir(), 'qx-e2e-'))
-  app = await electron.launch({
-    args: [ROOT, '--no-sandbox'],
-    env: { ...process.env, ELECTRON_RENDERER_URL: '' }
-  })
+  app = await electron.launch(launchOptions())
   page = await app.firstWindow()
   await page.setViewportSize({ width: 1280, height: 800 })
   await app.evaluate(({ shell }) => {

@@ -1,0 +1,67 @@
+appId: com.qingxiang.app
+productName: 轻匣
+copyright: 轻匣
+directories:
+  output: dist
+  buildResources: build
+files:
+  - out/**
+  - package.json
+  - '!**/node_modules/*/{CHANGELOG.md,README.md,readme.md,HISTORY.md,test,tests,__tests__,docs,doc,example,examples,*.d.ts,*.map}'
+  - '!**/node_modules/**/*.{md,map,ts,mts,cts}'
+  # 界面已自带 pdf.js，主进程只需要 legacy 版本及其资源
+  - '!**/node_modules/pdfjs-dist/{web,build,types,image_decoders}/**'
+  # 只保留高精度识别模型（识别引擎的各个 wasm 变体会按运行环境选择，全部保留）
+  - '!**/node_modules/@tesseract.js-data/*/4.0.0/**'
+  # 不需要的平台变体
+  - '!**/node_modules/@napi-rs/canvas-linux-x64-musl/**'
+asarUnpack:
+  # 原生模块、WebAssembly 与需要在后台线程中按路径读取的资源
+  - '**/node_modules/sharp/**'
+  - '**/node_modules/@img/**'
+  - '**/node_modules/@napi-rs/**'
+  - '**/node_modules/tesseract.js/**'
+  - '**/node_modules/tesseract.js-core/**'
+  - '**/node_modules/@tesseract.js-data/**'
+  - '**/node_modules/@neslinesli93/qpdf-wasm/**'
+  - '**/node_modules/pdfjs-dist/**'
+  - '**/node_modules/heic-decode/**'
+  - '**/node_modules/libheif-js/**'
+win:
+  icon: build/icon.ico
+  files:
+    - '!**/node_modules/@img/sharp-{linux,linuxmusl,darwin,wasm32}*/**'
+    - '!**/node_modules/@img/sharp-libvips-{linux,linuxmusl,darwin}*/**'
+    - '!**/node_modules/@napi-rs/{canvas,lzma}-{linux,darwin}*/**'
+  target:
+    - target: nsis
+      arch: [x64]
+    - target: portable
+      arch: [x64]
+  # 在 Linux / macOS 上构建时需要安装 wine
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: always
+  createStartMenuShortcut: true
+  shortcutName: 轻匣
+  installerLanguages: [zh_CN]
+  language: '2052'
+  artifactName: 轻匣-${version}-安装版.${ext}
+  installerIcon: build/icon.ico
+  uninstallerIcon: build/icon.ico
+portable:
+  artifactName: 轻匣-${version}-便携版.${ext}
+mac:
+  icon: build/icon.png
+  target: [dmg]
+  category: public.app-category.productivity
+linux:
+  icon: build/icon.png
+  files:
+    - '!**/node_modules/@img/sharp-{win32,darwin,linuxmusl,wasm32}*/**'
+    - '!**/node_modules/@img/sharp-libvips-{win32,darwin,linuxmusl}*/**'
+    - '!**/node_modules/@napi-rs/canvas-{win32,darwin}*/**'
+  target: [AppImage]
+  category: Office

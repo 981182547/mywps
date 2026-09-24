@@ -19,7 +19,7 @@ async function scanImage(name: string, lines: string[]): Promise<string> {
   ctx.fillStyle = '#ffffff'
   ctx.fillRect(0, 0, c.width, c.height)
   ctx.fillStyle = '#111111'
-  ctx.font = '52px "WenQuanYi Zen Hei", sans-serif'
+  ctx.font = '52px "Microsoft YaHei", "PingFang SC", "WenQuanYi Zen Hei", "Noto Sans CJK SC", sans-serif'
   lines.forEach((l, i) => ctx.fillText(l, 100, 150 + i * 110))
   const p = join(dir, name)
   await writeFile(p, await c.encode('png'))

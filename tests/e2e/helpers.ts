@@ -14,9 +14,16 @@ export interface Ctx {
   dir: string
 }
 
+/** 设置 QX_APP_EXEC 为打包后的程序路径，即可对安装包版本运行同一套测试 */
+export function launchOptions(extraEnv: Record<string, string> = {}) {
+  const env = { ...process.env, ELECTRON_RENDERER_URL: '', ...extraEnv } as Record<string, string>
+  const exec = process.env.QX_APP_EXEC
+  return exec ? { executablePath: exec, args: ['--no-sandbox'], env } : { args: [ROOT, '--no-sandbox'], env }
+}
+
 export async function launch(extraEnv: Record<string, string> = {}): Promise<Ctx> {
   const dir = await mkdtemp(join(tmpdir(), 'qx-e2e-'))
-  const app = await electron.launch({ args: [ROOT, '--no-sandbox'], env: { ...process.env, ELECTRON_RENDERER_URL: '', ...extraEnv } })
+  const app = await electron.launch(launchOptions(extraEnv))
   const page = await app.firstWindow()
   await page.setViewportSize({ width: 1280, height: 800 })
   await app.evaluate(({ shell }) => {

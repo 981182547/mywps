@@ -16,7 +16,7 @@ async function scan(name: string, lines: string[]): Promise<string> {
   g.fillStyle = '#fff'
   g.fillRect(0, 0, c.width, c.height)
   g.fillStyle = '#111'
-  g.font = '50px "WenQuanYi Zen Hei", sans-serif'
+  g.font = '50px "Microsoft YaHei", "PingFang SC", "WenQuanYi Zen Hei", "Noto Sans CJK SC", sans-serif'
   lines.forEach((l, i) => g.fillText(l, 80, 140 + i * 110))
   const p = join(ctx.dir, name)
   await writeFile(p, await c.encode('png'))
