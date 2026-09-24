@@ -9,6 +9,7 @@ import { ExcelToPdfTool, OfficeConvertTool, PdfToExcelTool, PdfToWordTool, PptTo
 import { PageNumberTool } from './PageNumberTool'
 import { PageOrganizer } from './PageOrganizer'
 import { WatermarkTool } from './WatermarkTool'
+import { RenameTool } from './RenameTool'
 import { SignTool } from './SignTool'
 import { SplitTool } from './SplitTool'
 import { toolById, type ToolId } from './registry'
@@ -80,6 +81,8 @@ export function ToolHost({ id, initialFiles, onBack }: Props) {
       return <OcrImageTool tool={tool} initialFiles={initialFiles} onBack={onBack} />
     case 'ocr-pdf':
       return <OcrPdfTool tool={tool} initialFiles={initialFiles} onBack={onBack} />
+    case 'batch-rename':
+      return <RenameTool tool={tool} initialFiles={initialFiles} onBack={onBack} />
     default:
       return null
   }

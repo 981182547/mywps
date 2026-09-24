@@ -181,13 +181,16 @@ export function ResultView({
   notes = [],
   failures = [],
   preview,
-  onReset
+  onReset,
+  actions
 }: {
   outputs: string[]
   notes?: string[]
   failures?: string[]
   preview?: string
   onReset: () => void
+  /** 额外操作按钮，例如“撤销” */
+  actions?: ReactNode
 }) {
   const single = outputs.length === 1
   return (
@@ -237,6 +240,7 @@ export function ResultView({
           打开所在文件夹
         </button>
       </div>
+      {actions}
       <button className="btn ghost block" style={{ marginTop: 8 }} onClick={onReset}>
         <RotateCcw size={14} /> 继续处理
       </button>

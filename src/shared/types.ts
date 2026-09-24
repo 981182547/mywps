@@ -5,6 +5,8 @@ export interface FileInfo {
   name: string
   ext: string
   size: number
+  /** 修改时间（毫秒） */
+  mtime?: number
 }
 
 /** 输出位置：与第一个源文件相同目录，或用户指定目录 */
@@ -265,6 +267,12 @@ export interface OcrPdfJob {
   output: OutputTarget
 }
 
+export interface RenameJob {
+  type: 'rename'
+  /** 同一文件夹内改名：from 为完整路径，to 为新文件名 */
+  items: { from: string; to: string }[]
+}
+
 export type ImageFormat = 'jpg' | 'png' | 'webp' | 'avif' | 'tiff' | 'bmp' | 'ico' | 'gif'
 
 /** 批量任务的输出：dir 为空表示各自保存在源文件所在文件夹 */
@@ -317,6 +325,7 @@ export interface BatchResult {
 }
 
 export type Job =
+  | RenameJob
   | OcrImagesJob
   | OcrPdfJob
   | PdfToWordJob

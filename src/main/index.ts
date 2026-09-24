@@ -50,7 +50,7 @@ async function toFileInfo(path: string): Promise<FileInfo | null> {
   try {
     const s = await stat(path)
     if (!s.isFile()) return null
-    return { path, name: basename(path), ext: extname(path).slice(1).toLowerCase(), size: s.size }
+    return { path, name: basename(path), ext: extname(path).slice(1).toLowerCase(), size: s.size, mtime: s.mtimeMs }
   } catch {
     return null
   }

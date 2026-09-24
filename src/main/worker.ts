@@ -12,6 +12,7 @@ import { signPdf } from './engine/sign'
 import { officeConvert, officeToPdf } from './engine/office'
 import { pdfToExcel, pdfToWord } from './engine/pdf2office'
 import { ocrImages, ocrPdf } from './engine/ocr'
+import { renameFiles } from './engine/rename'
 import { onChildProcess } from './engine/child'
 
 export type WorkerMessage =
@@ -68,6 +69,8 @@ function run(job: Job, progress: Progress): Promise<string[] | JobResult> {
       return ocrImages(job, progress)
     case 'ocr-pdf':
       return ocrPdf(job, progress)
+    case 'rename':
+      return renameFiles(job, progress)
   }
 }
 

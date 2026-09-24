@@ -10,6 +10,7 @@ import {
   FileSearch,
   FileSpreadsheet,
   FileText,
+  FolderCog,
   FileType2,
   GalleryVertical,
   Hash,
@@ -29,12 +30,13 @@ import {
   Scissors,
   Sheet,
   ShieldCheck,
+  TextCursorInput,
   Trash2,
   Type,
   Wrench
 } from 'lucide-react'
 
-export type CategoryId = 'pdf' | 'convert' | 'image' | 'security' | 'compress' | 'ocr'
+export type CategoryId = 'pdf' | 'convert' | 'image' | 'security' | 'compress' | 'ocr' | 'files'
 
 export interface Category {
   id: CategoryId
@@ -51,7 +53,8 @@ export const CATEGORIES: Category[] = [
   { id: 'image', name: '图片工具', desc: '格式转换、压缩与调整尺寸', icon: Images, tint: 'green' },
   { id: 'security', name: '安全与签名', desc: '加密、解密、签名与盖章', icon: ShieldCheck, tint: 'amber' },
   { id: 'compress', name: '压缩与修复', desc: '减小 PDF 体积，修复损坏的文件', icon: FileArchive, tint: 'violet' },
-  { id: 'ocr', name: '文字识别', desc: '从图片和扫描件中提取文字', icon: ScanText, tint: 'cyan' }
+  { id: 'ocr', name: '文字识别', desc: '从图片和扫描件中提取文字', icon: ScanText, tint: 'cyan' },
+  { id: 'files', name: '文件工具', desc: '批量重命名等常用文件操作', icon: FolderCog, tint: 'blue' }
 ]
 
 export type ToolId =
@@ -84,6 +87,7 @@ export type ToolId =
   | 'pdf-repair'
   | 'ocr-image'
   | 'ocr-pdf'
+  | 'batch-rename'
 
 export interface ToolDef {
   id: ToolId
@@ -129,6 +133,7 @@ export const TOOLS: ToolDef[] = [
   { id: 'pdf-sign', name: '签名与盖章', desc: '手写签名、印章拖放到页面，支持骑缝章', category: 'security', icon: PenLine, keywords: ['签名', '盖章', '印章'], ready: true, accepts: PDF },
   { id: 'pdf-compress', name: 'PDF 压缩', desc: '三档压缩强度，显示压缩前后大小', category: 'compress', icon: FileArchive, keywords: ['压缩', '瘦身', '减小'], ready: true, accepts: PDF },
   { id: 'pdf-repair', name: 'PDF 修复', desc: '打不开或提示损坏的 PDF，尝试恢复页面', category: 'compress', icon: Wrench, keywords: ['修复', '损坏', '打不开'], ready: true, accepts: PDF },
+  { id: 'batch-rename', name: '批量重命名', desc: '序号、日期、查找替换，实时预览，可以撤销', category: 'files', icon: TextCursorInput, keywords: ['重命名', '改名', '文件名', 'rename'], ready: true, accepts: ['*'] },
   { id: 'ocr-pdf', name: '扫描件识别', desc: '扫描版 PDF 转为可搜索、可复制的 PDF 或 Word', category: 'ocr', icon: FileSearch, keywords: ['ocr', '扫描', '识别', '可搜索', '复制'], ready: true, accepts: PDF },
   { id: 'ocr-image', name: '图片转文字', desc: '识别截图、照片中的中英文，一键复制', category: 'ocr', icon: ScanText, keywords: ['ocr', '识别', '文字'], ready: true, accepts: IMAGE_EXTS }
 ]
@@ -153,5 +158,5 @@ export function searchTools(q: string): ToolDef[] {
 export function suggestTools(exts: string[]): ToolDef[] {
   const set = new Set(exts)
   if (set.size === 0) return []
-  return TOOLS.filter((t) => t.ready && [...set].every((e) => t.accepts.includes(e)))
+  return TOOLS.filter((t) => t.ready && (t.accepts.includes('*') || [...set].every((e) => t.accepts.includes(e))))
 }

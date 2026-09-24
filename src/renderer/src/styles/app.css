@@ -2463,3 +2463,54 @@ select.input {
 .text-preview textarea:focus {
   border-color: var(--accent);
 }
+
+/* ============ 批量重命名 ============ */
+.rename-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 13px;
+}
+.rename-table th {
+  text-align: left;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-3);
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: -10px;
+  background: var(--surface);
+}
+.rename-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+  word-break: break-all;
+}
+.rename-table td svg {
+  color: var(--text-3);
+  margin-top: 2px;
+}
+.rename-table td.num {
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+}
+.rename-table td.old {
+  color: var(--text-2);
+}
+.rename-table tr.changed td.new {
+  color: var(--accent-text);
+  font-weight: 560;
+}
+.rename-table tr.bad td.new {
+  color: var(--danger);
+}
+.rename-table .problem {
+  font-size: 11.5px;
+  font-weight: 500;
+  margin-top: 2px;
+}
+.rename-table tr:hover td {
+  background: var(--hover);
+}
